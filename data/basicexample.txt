@@ -1,0 +1,58 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "http://localhost:7000/thing/",
+    "headers": {},
+    "body": {
+      "name": {
+        "6r0dT4&;29Slo-<5Uc-gu9M12`$B3O": true,
+        "innerjson": {
+          "type": "fixed",
+          "value": "John",
+          "inputs": ""
+        }
+      },
+      "status": {
+        "6r0dT4&;29Slo-<5Uc-gu9M12`$B3O": true,
+        "innerjson": {
+          "type": "generated",
+          "value": "RandomNumber",
+          "inputs": ""
+        }
+      }
+    }
+  },
+  "response": {
+    "body": {
+      "apitesting::type": "hashmap",
+      "innerjson": {
+        "status": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "class",
+            "value": "String",
+            "required": "true"
+          }
+        },
+        "name": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "class",
+            "value": "String",
+            "required": "true"
+          }
+        },
+        "id": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "class",
+            "value": "Fixnum",
+            "required": "true"
+          }
+        }
+      }
+    },
+    "headers": {},
+    "status": 201
+  }
+}
