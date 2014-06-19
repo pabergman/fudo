@@ -2,7 +2,7 @@
 require 'json'
 
 
-class FuckYou
+class FudoJsonGenerator
 
   def self.master(input, output)
 
@@ -65,7 +65,7 @@ output = JSON.parse("{}")
 input = JSON.parse(shittystring)
 
 
-FuckYou.master(input, output)
+FudoJsonGenerator.master(input, output)
 
 puts JSON.pretty_generate(output)
 

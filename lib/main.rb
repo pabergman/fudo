@@ -2,7 +2,7 @@
 require 'json'
 require 'typhoeus'
 
-class ResponseNommer
+class ResponseChecker
 
   def self.verify_response(expected_data, response_data)
     verify_status(expected_data['status'], response_data.code)
@@ -71,7 +71,7 @@ class ResponseNommer
 end
 
 
-class RequestBaker
+class RequestCreator
 
 
 
@@ -135,12 +135,12 @@ if __FILE__ == $0
   file = open("../data/basicexample3.txt")
   testdata = JSON.parse(file.read)
 
-  bakedRequest = RequestBaker.bake_request(testdata['request'])
+  requestData = RequestCreator.bake_request(testdata['request'])
 
-  request = Typhoeus::Request.new(bakedRequest['url'],verbose: true, method: bakedRequest['method'], body: bakedRequest['body'])
+  request = Typhoeus::Request.new(requestData['url'],verbose: true, method: requestData['method'], body: requestData['body'])
 
   request.run
 
-  ResponseNommer.verify_response(testdata['response'], request.response)
+  ResponseChecker.verify_response(testdata['response'], request.response)
 
 end
