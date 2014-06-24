@@ -1,0 +1,39 @@
+{
+  "apitesting::type": "array",
+  "parameters": {
+    "min": 0,
+    "max": 2,
+    "repeat": false
+  },
+  "innerjson": {
+    "0": {
+      "apitesting::type": "hashmap",
+      "innerjson": {
+        "status": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "fixed",
+            "value": "new",
+            "required": true
+          }
+        },
+        "name": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "fixed",
+            "value": "alex",
+            "required": true
+          }
+        },
+        "id": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "fixed",
+            "value": 10,
+            "required": true
+          }
+        }
+      }
+    }
+  }
+}

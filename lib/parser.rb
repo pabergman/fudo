@@ -40,7 +40,6 @@ class FudoJsonGenerator
     output['apitesting::type'] = "hashmap"
     output['innerjson'] = Hash.new
 
-    puts output
     input.each do |key, value|
       output['innerjson'][key] = Hash.new
       master(value, output['innerjson'][key])
@@ -57,17 +56,17 @@ class FudoJsonGenerator
 
 end
 
-#shittystring = '[{"status": "new", "name": "alex", "id": 10},{"status": "new", "name": "alex", "id": 11}]'
+# shittystring = '[{"status": "new", "name": "alex", "id": 10},{"status": "new", "name": "alex", "id": 11}]'
 #shittystring = '{"status": "new", "name": "alex", "id": {"status": "new", "name": [2,3,4,5]}}'
 
 
-output = JSON.parse("{}")
-input = JSON.parse(shittystring)
+# output = JSON.parse("{}")
+# input = JSON.parse(shittystring)
 
 
-FudoJsonGenerator.master(input, output)
+# FudoJsonGenerator.master(input, output)
 
-puts JSON.pretty_generate(output)
+# puts JSON.pretty_generate(output)
 
 
 # INPUT
@@ -81,8 +80,8 @@ puts JSON.pretty_generate(output)
 #       "apitesting::type": "array",
 #       "parameters": {
 #         "min": 0,
-#         "max": -1,
-#         "repeat": true
+#         "max": 4,
+#         "repeat": false
 #       },
 #       "innerjson": {
 #         "0": {
