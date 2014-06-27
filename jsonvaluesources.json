@@ -2,43 +2,43 @@
   "type": "object",
   "required": false,
   "properties": {
-    "city": {
+    "name": {
       "type": "field",
       "source": "fixed",
       "value": "Alex",
       "required": false
     },
-    "name": {
+    "surname": {
       "type": "field",
       "source": "Faker",
-      "value": "Name.name",
+      "value": "Name.surname",
       "required": false
     },
-    "hash": {
+    "token": {
       "type": "field",
       "source": "Custom",
       "value": "HMAC",
-      "inputs": [],
+      "inputs": "secret,apikey",
       "required": false
     },
-    "environmental": {
+    "apiversion": {
       "type": "field",
       "source": "Environmental",
-      "namespace": "User",
-      "value": "UserName",
+      "namespace": "Api",
+      "value": "Version",
       "required": false
     },
-    "previoustest": {
+    "primaryaddress": {
       "type": "field",
       "source": "Previoustest",
-      "value": "TestName;KeyOne;KeyTwo;ArrayIndex",
+      "value": "GetUserDetails;primaryaddress",
       "required": false
     },
-    "runtest": {
+    "friends": {
       "type": "field",
       "source": "Runtest",
       "namespace": "General",
-      "value": "TestingPasswordChange;KeyOne;KeyTwo;ArrayIndex",
+      "value": "GetFriendGraph",
       "required": true
     }
   }
