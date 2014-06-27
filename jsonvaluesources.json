@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "required": false,
+  "properties": {
+    "city": {
+      "type": "field",
+      "source": "fixed",
+      "value": "Alex",
+      "required": false
+    },
+    "name": {
+      "type": "field",
+      "source": "Faker",
+      "value": "Name.name",
+      "required": false
+    },
+    "hash": {
+      "type": "field",
+      "source": "Custom",
+      "value": "HMAC",
+      "inputs": [],
+      "required": false
+    },
+    "environmental": {
+      "type": "field",
+      "source": "Environmental",
+      "namespace": "User",
+      "value": "UserName",
+      "required": false
+    },
+    "previoustest": {
+      "type": "field",
+      "source": "Previoustest",
+      "value": "TestName;KeyOne;KeyTwo;ArrayIndex",
+      "required": false
+    },
+    "runtest": {
+      "type": "field",
+      "source": "Runtest",
+      "namespace": "General",
+      "value": "TestingPasswordChange;KeyOne;KeyTwo;ArrayIndex",
+      "required": true
+    }
+  }
+}
+
+// if it's type object 
+// 	=> if required, change value to array, add to test list
+// 	=> if required, change value to string, add to test list
+// 	=> if required, remove key, add to test list
+// 	=> if required, leave empty, add to test list
+// 	=> enter properties
+
