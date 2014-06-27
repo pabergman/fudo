@@ -2,18 +2,6 @@
   "type": "object",
   "required": false,
   "properties": {
-    "name": {
-      "type": "field",
-      "source": "fixed",
-      "value": "Alex",
-      "required": false
-    },
-    "surname": {
-      "type": "field",
-      "source": "Faker",
-      "value": "Name.surname",
-      "required": false
-    },
     "token": {
       "type": "field",
       "source": "Custom",
@@ -28,6 +16,18 @@
       "value": "Version",
       "required": false
     },
+    "name": {
+      "type": "field",
+      "source": "fixed",
+      "value": "Alex",
+      "required": false
+    },
+    "surname": {
+      "type": "field",
+      "source": "Faker",
+      "value": "Name.surname",
+      "required": false
+    },   
     "primaryaddress": {
       "type": "field",
       "source": "Previoustest",
