@@ -7,14 +7,14 @@
       "source": "Custom",
       "value": "HMAC",
       "inputs": "secret,apikey",
-      "required": false
+      "required": true
     },
     "apiversion": {
       "type": "field",
       "source": "Environmental",
       "namespace": "Api",
       "value": "Version",
-      "required": false
+      "required": true
     },
     "name": {
       "type": "field",
