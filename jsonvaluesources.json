@@ -1,12 +1,12 @@
-Sources of data:
+// Sources of data:
 
-Global - Static data shared across all tests
-Environmental - Static or generated data shared across a suite of tests
-Previoustest - Data returned from an earlier test in a suite of tests (not available if single test)
-Runtest - Run a test to get data for this field
-Ffaker - Generated data
-Custom - Custom methods in fudo, eg HMAC
-Fixed - fixed fields
+// Global - Static data shared across all tests
+// Environmental - Static or generated data shared across a suite of tests
+// Previoustest - Data returned from an earlier test in a suite of tests (not available if single test)
+// Runtest - Run a test to get data for this field
+// Ffaker - Generated data
+// Custom - Custom methods in fudo, eg HMAC
+// Fixed - fixed fields
 
 
 {
