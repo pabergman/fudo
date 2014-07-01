@@ -14,39 +14,39 @@
   "required": false,
   "properties": {
     "token": {
-      "type": "field",
+      "type": "string",
       "source": "Custom",
       "value": "HMAC",
       "inputs": "secret,apikey",
       "required": true
     },
     "apiversion": {
-      "type": "field",
+      "type": "string",
       "source": "Environmental",
       "namespace": "Api",
       "value": "Version",
       "required": true
     },
     "name": {
-      "type": "field",
+      "type": "string",
       "source": "fixed",
       "value": "Alex",
       "required": false
     },
     "surname": {
-      "type": "field",
+      "type": "string",
       "source": "Faker",
       "value": "Name.surname",
       "required": false
     },   
     "primaryaddress": {
-      "type": "field",
+      "type": "string",
       "source": "Previoustest",
       "value": "GetUserDetails;primaryaddress",
       "required": false
     },
     "friends": {
-      "type": "field",
+      "type": "string",
       "source": "Runtest",
       "namespace": "General",
       "value": "GetFriendGraph",
@@ -61,4 +61,9 @@
 // 	=> if required, remove key, add to test list
 // 	=> if required, leave empty, add to test list
 // 	=> enter properties
+
+//Required - Not required
+//Unique
+//Auth 
+//Force status code on fail
 

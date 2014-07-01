@@ -1,38 +1,65 @@
 {
-  "request": {
-    "method": "GET",
-    "url": "http://localhost:7000/thing/",
-    "headers": {},
-    "body": {}
-  },
-  "response": {
-    "body": {
-      "status": {
-        "6r0dT4};29Slo-<5Uc-gu9M12`$B3O": true,
-        "innerjson": {
-          "type": "class",
-          "value": "String",
-          "required": "true"
-        }
-      },
-      "name": {
-        "6r0dT4};29Slo-<5Uc-gu9M12`$B3O": true,
-        "innerjson": {
-          "type": "class",
-          "value": "String",
-          "required": "true"
-        }
-      },
-      "id": {
-        "6r0dT4};29Slo-<5Uc-gu9M12`$B3O": true,
-        "innerjson": {
-          "type": "class",
-          "value": "Fixnum",
-          "required": "true"
-        }
+  "environmental": {
+    "name": {
+      "type": "string",
+      "properties": {
+        "source": "ffaker",
+        "value": "Faker::Name.name",
+        "inputs": []
       }
     },
-    "headers": {},
-    "status": 200
+    "name-2": {
+      "type": "object",
+      "properties": {
+        "surname": {
+          "type": "string",
+          "properties": {
+            "source": "ffaker",
+            "value": "Faker::Name.surname",
+            "inputs": []
+          }
+        }
+      }
+    }
+  },
+  "tests": {
+    "test-one": {
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:7000/thing/",
+        "headers": {},
+        "body": {}
+      },
+      "response": {
+        "body": {
+          "status": {
+            "6r0dT4};29Slo-<5Uc-gu9M12`$B3O": true,
+            "innerjson": {
+              "type": "class",
+              "value": "String",
+              "required": "true"
+            }
+          },
+          "name": {
+            "6r0dT4};29Slo-<5Uc-gu9M12`$B3O": true,
+            "innerjson": {
+              "type": "class",
+              "value": "String",
+              "required": "true"
+            }
+          },
+          "id": {
+            "6r0dT4};29Slo-<5Uc-gu9M12`$B3O": true,
+            "innerjson": {
+              "type": "class",
+              "value": "Fixnum",
+              "required": "true"
+            }
+          }
+        },
+        "headers": {},
+        "status": 200
+      }
+    }
   }
 }
