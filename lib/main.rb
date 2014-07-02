@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 require 'json'
-require 'Typhoeus'
+require 'typhoeus'
 require 'ffaker'
+require 'active_support/all'
 require_relative 'response_checker'
 
 class RequestCreator
@@ -66,7 +67,6 @@ class RequestCreator
   #   end
 
   def self.generate_enviroment(environment)
-    puts environment
     environment.each do |key, value|
       case value['type']
       when 'string' then environment[key] = set_value(value['properties'])
@@ -78,10 +78,19 @@ class RequestCreator
 
   def self.set_value(properties)
     case properties['source']
-    when 'ffaker' then value = eval(properties['value'])
+    when 'ffaker' value = "Faker::#{properties['value']['class']}".constantize.send(properties['value']['method'], *properties['inputs'])
+    when 'fixed' value = properties['value']
     end
-    puts value
     return value
+  end
+
+  def self.fake_value(value, inputs)
+    arity = instance_eval("Faker::#{value['class']}.instance_method(:#{value['method']}).arity").abs
+    # if(arity != 0)
+      "Faker::#{b}".constantize.send(x, *c)
+    # end
+
+
   end
 
 end
@@ -94,8 +103,8 @@ if __FILE__ == $0
       "type": "string",
       "properties": {
         "source": "ffaker",
-        "value": "Faker::Name.name",
-        "inputs": []
+        "value": { "class": "Internet", "method": "user_name"},
+        "inputs": ["hello"]
       }
     },
     "name-2": {
@@ -105,15 +114,15 @@ if __FILE__ == $0
           "type": "string",
           "properties": {
             "source": "ffaker",
-            "value": "Faker::Name.last_name",
+            "value": { "class": "Internet", "method": "user_name"},
             "inputs": []
           }
         },
         "firstname": {
           "type": "string",
           "properties": {
-            "source": "ffaker",
-            "value": "Faker::Name.first_name",
+            "source": "fixed",
+            "value": "Alex",
             "inputs": []
           }
         }
@@ -121,14 +130,26 @@ if __FILE__ == $0
     }
   }'
 
-  json = JSON.parse(stuff)
+   json = JSON.parse(stuff)
 
+
+  # puts instance_eval("Faker::Internet.user_name")
+
+  # b = "Internet"
+
+  # x = "user_name"
+
+  # c = []
+
+  # puts "Faker::#{b}".constantize.send(x, *c)
   RequestCreator.generate_enviroment(json)
 
   puts json
 
-  # faker = Faker.new
+  # puts json.size
 
+
+  # puts instance_eval("Faker::Internet.instance_method(:user_name)")
 
 
   # file = open("../data/basicexample3.txt")
