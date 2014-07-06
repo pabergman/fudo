@@ -3,68 +3,16 @@ require 'json'
 require 'typhoeus'
 require 'ffaker'
 require 'active_support/all'
+require 'vine'
 require_relative 'response_checker'
+require_relative 'fudo'
+
 
 class RequestCreator
 
   def self.create_request(request)
 
   end
-
-
-
-  # def self.create_request(request)
-  #   request['body'] = create_body(request['body'])
-  # end
-
-  # def self.create_body(request)
-
-  # end
-
-  #   def self.bake_request(request)
-  #     request['body'] = bake_body(request['body'])
-  #     request
-  #   end
-
-  #   def self.bake_body(body)
-  #     body.each do |key, value|
-  #       if value['6r0dT4&;29Slo-<5Uc-gu9M12`$B3O'] == true
-  #         body[key] = set_value(value['innerjson'])
-  #       else
-  #         body[key] = bake_body(value['innerjson'])
-  #       end
-  #     end
-  #     body
-  #   end
-
-  #   def self.set_value(stuff)
-  #     if(stuff['type'] == "fixed")
-  #       stuff['value']
-  #     elsif(stuff['type'] == "generated")
-  #       generate_values(stuff['value'], stuff['inputs'])
-  #     end
-  #   end
-
-  #   def self.generate_values(value, inputs)
-  #     Object.const_get(value).generate_value(inputs)
-  #   end
-
-  #   def self.fetch_values
-  #     #Pain! Do this later when I figured it out
-  #   end
-
-  # end
-
-  # class RandomName
-  #   def self.generate_value(inputs=false)
-  #     "OneName"
-  #   end
-  # end
-
-  # class RandomNumber
-  #   def self.generate_value(inputs=false)
-  #     rand(100)
-  #   end
 
   def self.generate_enviroment(environment)
     environment.each do |key, value|
@@ -77,24 +25,30 @@ class RequestCreator
   end
 
   def self.set_value(properties)
+
     case properties['source']
-    when 'ffaker' value = "Faker::#{properties['value']['class']}".constantize.send(properties['value']['method'], *properties['inputs'])
-    when 'fixed' value = properties['value']
+    when 'ffaker' then value = "Faker::#{properties['value']['class']}".constantize.send(properties['value']['method'], *properties['inputs'])
+    when 'global' then value = Fudo::GLOBAL_VARIABLES.access(properties['value'])
+    when 'fixed' then value = properties['value']
+    when 'runtest' then #do stuff
+    when 'previoustest' then #do stuff
+    when 'custom' then #dostuff
+    when 'environmental' then #dostuff
+    else puts "#{properties['source']} is not supported."
     end
     return value
+
   end
 
   def self.fake_value(value, inputs)
-    arity = instance_eval("Faker::#{value['class']}.instance_method(:#{value['method']}).arity").abs
-    # if(arity != 0)
-      "Faker::#{b}".constantize.send(x, *c)
-    # end
+    "Faker::#{b}".constantize.send(x, *c)
+  end
 
+  def self.generate_inputs()
 
   end
 
 end
-
 
 if __FILE__ == $0
 
@@ -104,7 +58,7 @@ if __FILE__ == $0
       "properties": {
         "source": "ffaker",
         "value": { "class": "Internet", "method": "user_name"},
-        "inputs": ["hello"]
+        "inputs": ["Alexander Bergman"]
       }
     },
     "name-2": {
@@ -113,8 +67,8 @@ if __FILE__ == $0
         "surname": {
           "type": "string",
           "properties": {
-            "source": "ffaker",
-            "value": { "class": "Internet", "method": "user_name"},
+            "source": "global",
+            "value": "UserOne.surname",
             "inputs": []
           }
         },
@@ -130,7 +84,7 @@ if __FILE__ == $0
     }
   }'
 
-   json = JSON.parse(stuff)
+  json = JSON.parse(stuff)
 
 
   # puts instance_eval("Faker::Internet.user_name")
@@ -145,6 +99,8 @@ if __FILE__ == $0
   RequestCreator.generate_enviroment(json)
 
   puts json
+
+  # puts Fudo::CONFIG['level']
 
   # puts json.size
 
