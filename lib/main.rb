@@ -36,6 +36,24 @@ if __FILE__ == $0
           }
         }
       }
+    },
+    "namearray": {
+      "type": "array",
+      "properties": [{
+      "type": "string",
+      "properties": {
+        "source": "ffaker",
+        "value": { "class": "Internet", "method": "user_name"},
+        "inputs": ["Alexander Bergman"]
+      }
+    }, {
+      "type": "string",
+      "properties": {
+        "source": "ffaker",
+        "value": { "class": "Internet", "method": "user_name"},
+        "inputs": ["Alexander Bergman"]
+      }
+    }]
     }
   }'
 
@@ -45,6 +63,8 @@ if __FILE__ == $0
 
   DataGenerator.generate_data(json)
 
-  puts json
+
+# puts "\n\n\n"
+   puts JSON.pretty_generate(json)
 
 end
