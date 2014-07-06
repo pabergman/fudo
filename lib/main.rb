@@ -9,7 +9,7 @@ if __FILE__ == $0
 
   stuff = '{
     "name": {
-      "type": "string",
+      "type": "value",
       "properties": {
         "source": "ffaker",
         "value": { "class": "Internet", "method": "user_name"},
@@ -20,18 +20,18 @@ if __FILE__ == $0
       "type": "object",
       "properties": {
         "surname": {
-          "type": "string",
+          "type": "value",
           "properties": {
-            "source": "global",
-            "value": "UserOne.surname",
+            "source": "ffaker",
+            "value": {"class":"Name", "method": "last_name"},
             "inputs": []
           }
         },
         "firstname": {
-          "type": "string",
+          "type": "value",
           "properties": {
-            "source": "fixed",
-            "value": "Alex",
+            "source": "ffaker",
+            "value": {"class":"Name", "method": "first_name"},
             "inputs": []
           }
         }
@@ -40,24 +40,23 @@ if __FILE__ == $0
     "namearray": {
       "type": "array",
       "properties": [{
-      "type": "string",
+      "type": "value",
       "properties": {
         "source": "ffaker",
         "value": { "class": "Internet", "method": "user_name"},
-        "inputs": ["Alexander Bergman"]
+        "inputs": []
       }
     }, {
-      "type": "string",
+      "type": "value",
       "properties": {
         "source": "ffaker",
         "value": { "class": "Internet", "method": "user_name"},
-        "inputs": ["Alexander Bergman"]
+        "inputs": []
       }
     }]
     }
   }'
 
-  temp = '{"username": "ladida", "age": 20}'
 
   json = JSON.parse(stuff)
 
