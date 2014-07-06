@@ -21,7 +21,6 @@ class RequestCreator
       when 'object' then environment[key] = generate_enviroment(value['properties'])
       end
     end
-
   end
 
   def self.set_value(properties)
@@ -36,7 +35,7 @@ class RequestCreator
     when 'environmental' then #dostuff
     else puts "#{properties['source']} is not supported."
     end
-    return value
+    value
 
   end
 
@@ -86,37 +85,10 @@ if __FILE__ == $0
 
   json = JSON.parse(stuff)
 
-
-  # puts instance_eval("Faker::Internet.user_name")
-
-  # b = "Internet"
-
-  # x = "user_name"
-
-  # c = []
-
-  # puts "Faker::#{b}".constantize.send(x, *c)
   RequestCreator.generate_enviroment(json)
 
   puts json
 
-  # puts Fudo::CONFIG['level']
 
-  # puts json.size
-
-
-  # puts instance_eval("Faker::Internet.instance_method(:user_name)")
-
-
-  # file = open("../data/basicexample3.txt")
-  # testdata = JSON.parse(file.read)
-
-  # requestData = RequestCreator.bake_request(testdata['request'])
-
-  # request = Typhoeus::Request.new(requestData['url'],verbose: true, method: requestData['method'], body: requestData['body'])
-
-  # request.run
-
-  # ResponseChecker.verify_response(testdata['response'], request.response)
 
 end
