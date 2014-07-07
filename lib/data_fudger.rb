@@ -103,11 +103,6 @@ class DataFudger
     end
   end
 
-  def magic()
-    m = Marshal.load(Marshal.dump(@origin_data))
-    snowflake(m)
-  end
-
   def snowflake(m, i = @fudged_data.size, fudger_spec = @fudger_spec)
     m.each do | key, value|
       if(value.class.to_s == 'Hash')
