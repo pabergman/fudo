@@ -41,7 +41,17 @@ class DataFudger
     when 2
     	depth_2(key)
     end
-    
+
+  end
+
+  def snowflake(m, i = @fudged_data.size, fudger_spec = @fudger_spec)
+    m.each do | key, value|
+      if(value.class.to_s == 'Hash')
+        m[key] = snowflake(value, i, fudger_spec[key]['properties'])
+      elsif(fudger_spec[key]['donotmodify'] == false)
+        value << "#{i}"
+      end
+    end
   end
 
   def depth_0(key)
@@ -111,16 +121,6 @@ class DataFudger
         end
       end
 
-  end
-
-  def snowflake(m, i = @fudged_data.size, fudger_spec = @fudger_spec)
-    m.each do | key, value|
-      if(value.class.to_s == 'Hash')
-        m[key] = snowflake(value, i, fudger_spec[key]['properties'])
-      elsif(fudger_spec[key]['donotmodify'] == false)
-        value << "#{i}"
-      end
-    end
   end
 
 end
