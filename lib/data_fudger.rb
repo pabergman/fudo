@@ -34,9 +34,18 @@ class DataFudger
   def dostuff(key)
 
     case @depth.size
-
     when 0
-      m = Marshal.load(Marshal.dump(@origin_data))
+    	depth_0(key)
+    when 1
+    	depth_1(key)
+    when 2
+    	depth_2(key)
+    end
+    
+  end
+
+  def depth_0(key)
+  	m = Marshal.load(Marshal.dump(@origin_data))
       snowflake(m)
       m.delete(key)
       if(@fudger_spec[key]['restrictions']['required'])
@@ -56,9 +65,10 @@ class DataFudger
           @fudged_data << {"status" => 200, "message"=> "#{key} should not need to be a unique field", "body" => m}
         end
       end
+  end
 
-    when 1
-      m = Marshal.load(Marshal.dump(@origin_data))
+  def depth_1(key)
+  	  m = Marshal.load(Marshal.dump(@origin_data))
       snowflake(m)
       m[@depth[0]].delete(key)
       if(@fudger_spec[@depth[0]]['properties'][key]['restrictions']['required'])
@@ -78,9 +88,10 @@ class DataFudger
           @fudged_data << {"status" => 200, "message"=> "#{key} should not need to be a unique field", "body" => m}
         end
       end
+  end
 
-    when 2
-      m = Marshal.load(Marshal.dump(@origin_data))
+  def depth_2(key)
+  	  m = Marshal.load(Marshal.dump(@origin_data))
       snowflake(m)
       m[@depth[0]][@depth[1]].delete(key)
       if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['restrictions']['required'])
@@ -100,7 +111,6 @@ class DataFudger
         end
       end
 
-    end
   end
 
   def snowflake(m, i = @fudged_data.size, fudger_spec = @fudger_spec)
