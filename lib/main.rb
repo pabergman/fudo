@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'json'
 require 'typhoeus'
+require 'vine'
 require_relative 'response_checker'
 require_relative 'data_generator'
 require_relative 'data_fudger'
@@ -60,8 +61,8 @@ if __FILE__ == $0
     "trueorfalse": {
       "type": "value",
       "properties": {
-        "source": "fixed",
-        "value": false
+        "source": "global",
+        "value": "UserOne.inner.stuff"
       }
     }
   }'
@@ -71,20 +72,57 @@ if __FILE__ == $0
   simple_fudge = '{
   "name": {
     "type": "value",
+    "donotmodify": false,
     "restrictions": {
       "required": true,
-      "unique": true,
-      "max_length": 10,
-      "min_length": 2
+      "unique": true
     }
   },
   "surname": {
     "type": "value",
+    "donotmodify": false,
     "restrictions": {
       "required": true,
-      "unique": false,
-      "max_length": 10,
-      "min_length": 2
+      "unique": false
+    }
+  },
+  "name2": {
+    "type": "object",
+    "restrictions": {
+      "required": true
+    },
+    "properties": {
+      "surnamex": {
+        "type": "value",
+        "donotmodify": false,
+        "restrictions": {
+          "required": false,
+          "unique": true
+        }
+      },
+      "firstname": {
+        "type": "value",
+        "donotmodify": true,
+        "restrictions": {
+          "required": true,
+          "unique": true
+        }
+      },
+      "whynowork": {
+        "type": "object",
+        "restrictions": {
+          "required": true
+        },
+        "properties": {
+          "add1": {
+            "type": "value",
+            "restrictions": {
+              "required": true,
+              "unique": true
+            }
+          }
+        }
+      }
     }
   }
 }'
@@ -95,13 +133,17 @@ if __FILE__ == $0
 
 simple_json = JSON.parse('{
   "name": "alexander",
-  "surname": "bergman"}')
+  "surname": "bergman",
+  "name2": {
+    "surnamex": "Larson",
+    "firstname": "Cecile",
+    "whynowork": { "add1" : "addline" }
+  }}')
 
 fudge_spec = JSON.parse(simple_fudge)
 
 
-# puts "\n\n\n"
-   # puts JSON.pretty_generate(json)
+
 
    df = DataFudger.new(simple_json, fudge_spec)
 
@@ -110,5 +152,7 @@ fudge_spec = JSON.parse(simple_fudge)
 
    df.run
 
+puts "--------------"
+puts df.fudged_data
 
 end
