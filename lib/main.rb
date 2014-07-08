@@ -86,6 +86,14 @@ if __FILE__ == $0
       "unique": false
     }
   },
+  "namearray": {
+    "type": "value",
+    "donotmodify": false,
+    "restrictions": {
+      "required": true,
+      "unique": false
+    }
+  },
   "name2": {
     "type": "object",
     "restrictions": {
@@ -132,8 +140,9 @@ if __FILE__ == $0
   DataGenerator.generate_data(json)
 
 simple_json = JSON.parse('{
-  "name": "alexander",
+  "name": "hi",
   "surname": "bergman",
+  "namearray": [{"city":"london"}],
   "name2": {
     "surnamex": "Larson",
     "firstname": "Cecile",
