@@ -135,6 +135,106 @@ if __FILE__ == $0
   }
 }'
 
+simple_fudge_array = '{
+  "name": {
+    "type": "value",
+    "donotmodify": false,
+    "restrictions": {
+      "required": true,
+      "unique": true
+    }
+  },
+  "namearray": {
+    "type": "array",
+    "donotmodify": false,
+    "restrictions": {
+      "required": true,
+      "unique": false
+    },
+    "properties": [
+      {
+        "type": "object",
+        "restrictions": {
+          "required": true
+        },
+        "properties": {
+          "myobject": {
+            "type": "value",
+            "donotmodify": false,
+            "restrictions": {
+              "required": false,
+              "unique": true
+            }
+          }
+        }
+      },
+      {
+        "type": "value",
+        "donotmodify": true,
+        "restrictions": {
+          "required": true,
+          "unique": true
+        }
+      },
+      {
+        "type": "value",
+        "donotmodify": true,
+        "restrictions": {
+          "required": true,
+          "unique": true
+        }
+      }
+    ]
+  },
+  "name2": {
+    "type": "object",
+    "restrictions": {
+      "required": true
+    },
+    "properties": {
+      "surnamex": {
+        "type": "value",
+        "donotmodify": false,
+        "restrictions": {
+          "required": false,
+          "unique": true
+        }
+      },
+      "firstname": {
+        "type": "value",
+        "donotmodify": true,
+        "restrictions": {
+          "required": true,
+          "unique": true
+        }
+      },
+      "whynowork": {
+        "type": "object",
+        "restrictions": {
+          "required": true
+        },
+        "properties": {
+          "add1": {
+            "type": "value",
+            "restrictions": {
+              "required": true,
+              "unique": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "surname": {
+    "type": "value",
+    "donotmodify": false,
+    "restrictions": {
+      "required": true,
+      "unique": false
+    }
+  }
+}'
+
   json = JSON.parse(stuff)
 
   DataGenerator.generate_data(json)
@@ -142,26 +242,36 @@ if __FILE__ == $0
 simple_json = JSON.parse('{
   "name": "hi",
   "surname": "bergman",
-  "namearray": [{"city":"london"}],
+  "namearray": ["testname","testsurname", 0],
   "name2": {
     "surnamex": "Larson",
     "firstname": "Cecile",
     "whynowork": { "add1" : "addline" }
   }}')
 
-fudge_spec = JSON.parse(simple_fudge)
+simple_json_array = JSON.parse('{
+  "name": "hi",
+  "namearray": [{"myobject":"myname"},"testsurname", 0],
+  "name2": {
+    "surnamex": "Larson",
+    "firstname": "Cecile",
+    "whynowork": { "add1" : "addline" }
+  },
+  "surname": "bergman"}')
+
+fudge_spec = JSON.parse(simple_fudge_array)
 
 
 
 
-   df = DataFudger.new(simple_json, fudge_spec)
+   df = DataFudger.new(simple_json_array, fudge_spec)
 
 
-   puts JSON.pretty_generate(df.origin_data)
+   # puts JSON.pretty_generate(df.origin_data)
 
    df.run
 
 puts "--------------"
-puts df.fudged_data
+ puts JSON.pretty_generate(df.fudged_data)
 
 end

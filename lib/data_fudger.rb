@@ -14,7 +14,6 @@ class DataFudger
 
 
   def run(input = @origin_data)
-   
     input.each do |key, value|
       case value.class.to_s
       when 'Hash'
@@ -23,7 +22,8 @@ class DataFudger
         run(value)
       when 'Array'
         dostuff(key)
-        snowflake_array(value)
+        @depth << key
+        run_array(value)
       when 'String'
         dostuff(key)
       when 'Fixnum'
@@ -33,21 +33,42 @@ class DataFudger
       end
     end
 
+    @depth.pop
+  end
+
+  def run_array(input = @origin_data)
+    input.each_with_index do |value, index|
+      case value.class.to_s
+      when 'Hash'
+        #dostuff(index)
+        @depth << index
+        run(value)
+      when 'Array'
+        #dostuff(index)
+        run_array(value)
+      when 'String'
+        # dostuff(index)
+      when 'Fixnum'
+        # dostuff(index)
+      when 'boolean'
+        # dostuff(index)
+      end
+    end
+    @depth.pop
   end
 
   def dostuff(key)
-  	    m = Marshal.load(Marshal.dump(@origin_data))
+    m = Marshal.load(Marshal.dump(@origin_data))
     snowflake(m)
-     @fudged_data<<m
 
-    # case @depth.size
-    # when 0
-    #   depth_0(key)
-    # when 1
-    #   depth_1(key)
-    # when 2
-    #   depth_2(key)
-    # end
+    case @depth.size
+    when 0
+      depth_0(key)
+    when 1
+      depth_1(key)
+    when 2
+      depth_2(key)
+    end
 
   end
 
@@ -67,10 +88,10 @@ class DataFudger
   end
 
   def snowflake_array(array, i = @fudged_data.size, fudger_spec = @fudger_spec)
-    array.each do |value|
+    array.each_with_index do |value, index|
       case value.class.to_s
       when 'Hash'
-        snowflake(value, i, fudger_spec['properties'])
+        snowflake(value, i, fudger_spec['properties'][index]['properties'])
       when 'Array'
         snowflake_array(value)
       else
@@ -99,7 +120,6 @@ class DataFudger
       @fudged_data << {"status" => 400, "message"=> "#{key} is a required field", "body" => m}
     else
       @fudged_data << {"status" => 200, "message"=> "#{key} is not a required field", "body" => m}
-
     end
 
     if(@fudger_spec[key]['type'] == 'value')
@@ -117,7 +137,12 @@ class DataFudger
   def depth_1(key)
     m = Marshal.load(Marshal.dump(@origin_data))
     snowflake(m)
-    m[@depth[0]].delete(key)
+    if(m[@depth[0]].class.to_s == 'Hash')
+      m[@depth[0]].delete(key)
+    else
+      m[@depth[0]][key] = nil
+    end
+
     if(@fudger_spec[@depth[0]]['properties'][key]['restrictions']['required'])
       @fudged_data << {"status" => 400, "message"=> "#{key} is a required field", "body" => m}
     else
