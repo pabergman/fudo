@@ -7,7 +7,7 @@ class DataGenerator
   def self.generate_data(environment)
     environment.each do |key, value|
       case value['type']
-      when 'value' then environment[key] = set_value(value['properties']) 
+      when 'value' then environment[key] = set_value(value['properties'])
       when 'object' then environment[key] = generate_data(value['properties'])
       when 'array' then environment[key] = handle_array(value['properties'])
       else "oops"
@@ -34,11 +34,16 @@ class DataGenerator
   end
 
   def self.handle_array(properties)
-    properties.each_with_index do | entry, index | 
-      if(entry['type'] == 'value') 
-        properties[index] = set_value(entry['properties']) 
+
+    properties.each_with_index do | entry, index |
+      if(entry['type'] == 'value')
+        properties[index] = set_value(entry['properties'])
+      elsif(entry['type'] == 'object')
+        properties[index] = generate_data(entry['properties'])
+      elsif(entry['type'] == 'array')
+        properties[index] = generate_data(entry['properties'])
       else
-        properties[index] = generate_data(entry)
+        puts "error out"
       end
     end
   end

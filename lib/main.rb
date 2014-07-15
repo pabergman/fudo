@@ -11,131 +11,106 @@ require_relative 'fudo'
 if __FILE__ == $0
 
   stuff = '{
-    "name": {
-      "type": "value",
-      "properties": {
-        "source": "ffaker",
-        "value": { "class": "Internet", "method": "user_name"},
-        "inputs": ["Alexander Bergman"]
-      }
-    },
-    "name-2": {
-      "type": "object",
-      "properties": {
-        "surname": {
-          "type": "value",
-          "properties": {
-            "source": "ffaker",
-            "value": {"class":"Name", "method": "last_name"},
-            "inputs": []
-          }
-        },
-        "firstname": {
-          "type": "value",
-          "properties": {
-            "source": "ffaker",
-            "value": {"class":"Name", "method": "first_name"},
-            "inputs": []
-          }
-        }
-      }
-    },
-    "namearray": {
-      "type": "array",
-      "properties": [{
-      "type": "value",
-      "properties": {
-        "source": "ffaker",
-        "value": { "class": "Internet", "method": "user_name"},
-        "inputs": []
-      }
-    }, {
-      "type": "value",
-      "properties": {
-        "source": "ffaker",
-        "value": { "class": "Internet", "method": "user_name"},
-        "inputs": []
-      }
-    }]
-    },
-    "trueorfalse": {
-      "type": "value",
-      "properties": {
-        "source": "global",
-        "value": "UserOne.inner.stuff"
-      }
-    }
-  }'
-
-  # simple_fudge = '{ "name": {"required": true, "unique": true, "type": "string", "max_length": 20, "min_length": 2}}'
-
-  simple_fudge = '{
   "name": {
     "type": "value",
-    "donotmodify": false,
-    "restrictions": {
-      "required": true,
-      "unique": true
-    }
-  },
-  "surname": {
-    "type": "value",
-    "donotmodify": false,
-    "restrictions": {
-      "required": true,
-      "unique": false
+    "properties": {
+      "source": "ffaker",
+      "value": {
+        "class": "Internet",
+        "method": "user_name"
+      },
+      "inputs": [
+      ]
     }
   },
   "namearray": {
-    "type": "value",
-    "donotmodify": false,
-    "restrictions": {
-      "required": true,
-      "unique": false
-    }
+    "type": "array",
+    "properties": [
+      {
+        "type": "object",
+        "properties": {
+          "myobject": {
+            "type": "value",
+            "properties": {
+              "source": "ffaker",
+              "value": {
+                "class": "Name",
+                "method": "last_name"
+              },
+              "inputs": []
+            }
+          }
+        }
+      },
+      {
+        "type": "value",
+        "properties": {
+          "source": "ffaker",
+          "value": {
+            "class": "Internet",
+            "method": "user_name"
+          },
+          "inputs": []
+        }
+      }
+    ]
   },
   "name2": {
     "type": "object",
-    "restrictions": {
-      "required": true
-    },
     "properties": {
       "surnamex": {
         "type": "value",
-        "donotmodify": false,
-        "restrictions": {
-          "required": false,
-          "unique": true
+        "properties": {
+          "source": "ffaker",
+          "value": {
+            "class": "Name",
+            "method": "last_name"
+          },
+          "inputs": []
         }
       },
       "firstname": {
         "type": "value",
-        "donotmodify": true,
-        "restrictions": {
-          "required": true,
-          "unique": true
+        "properties": {
+          "source": "ffaker",
+          "value": {
+            "class": "Name",
+            "method": "first_name"
+          },
+          "inputs": []
         }
       },
       "whynowork": {
         "type": "object",
-        "restrictions": {
-          "required": true
-        },
         "properties": {
           "add1": {
-            "type": "value",
-            "restrictions": {
-              "required": true,
-              "unique": true
-            }
+          "type": "value",
+          "properties": {
+            "source": "fixed",
+            "value": "addline1"
           }
         }
+        }
       }
+    }
+  },
+  "surname": {
+    "type": "value",
+    "properties": {
+      "source": "ffaker",
+      "value": {
+        "class": "Internet",
+        "method": "user_name"
+      },
+      "inputs": [
+        "Alexander Bergman"
+      ]
     }
   }
 }'
 
-simple_fudge_array = '{
+
+  simple_fudge_array = '{
   "name": {
     "type": "value",
     "donotmodify": false,
@@ -239,17 +214,9 @@ simple_fudge_array = '{
 
   DataGenerator.generate_data(json)
 
-simple_json = JSON.parse('{
-  "name": "hi",
-  "surname": "bergman",
-  "namearray": ["testname","testsurname", 0],
-  "name2": {
-    "surnamex": "Larson",
-    "firstname": "Cecile",
-    "whynowork": { "add1" : "addline" }
-  }}')
+  puts JSON.pretty_generate(json)
 
-simple_json_array = JSON.parse('{
+  simple_json_array = JSON.parse('{
   "name": "hi",
   "namearray": [{"myobject":"myname"},"testsurname", 0],
   "name2": {
@@ -259,19 +226,20 @@ simple_json_array = JSON.parse('{
   },
   "surname": "bergman"}')
 
-fudge_spec = JSON.parse(simple_fudge_array)
+  fudge_spec = JSON.parse(simple_fudge_array)
 
 
 
 
-   df = DataFudger.new(simple_json_array, fudge_spec)
+  df = DataFudger.new(json, fudge_spec)
 
 
-   # puts JSON.pretty_generate(df.origin_data)
 
-   df.run
+  df.run
 
-puts "--------------"
- puts JSON.pretty_generate(df.fudged_data)
+  puts '--------------'
+  puts df.fudged_data.size
+  puts "--------------"
+  puts JSON.pretty_generate(df.fudged_data)
 
 end
