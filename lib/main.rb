@@ -10,6 +10,66 @@ require_relative 'fudo'
 
 if __FILE__ == $0
 
+  request = '{
+  "request": {
+    "method": "POST",
+    "url": "http://localhost:7000/thing/",
+    "headers": {},
+    "body": {
+      "name": {
+        "6r0dT4&;29Slo-<5Uc-gu9M12`$B3O": true,
+        "innerjson": {
+          "type": "fixed",
+          "value": "John",
+          "inputs": ""
+        }
+      },
+      "status": {
+        "6r0dT4&;29Slo-<5Uc-gu9M12`$B3O": true,
+        "innerjson": {
+          "type": "generated",
+          "value": "RandomNumber",
+          "inputs": ""
+        }
+      }
+    }
+  },
+  "response": {
+    "body": {
+      "apitesting::type": "hashmap",
+      "innerjson": {
+        "status": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "class",
+            "value": "String",
+            "required": "true"
+          }
+        },
+        "name": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "class",
+            "value": "String",
+            "required": "true"
+          }
+        },
+        "id": {
+          "apitesting::type": "value",
+          "innerjson": {
+            "type": "class",
+            "value": "Fixnum",
+            "required": "true"
+          }
+        }
+      }
+    },
+    "headers": {},
+    "status": 200,
+    "message": "should pass"
+  }
+}'
+
   stuff = '{
   "name": {
     "type": "value",
@@ -210,11 +270,14 @@ if __FILE__ == $0
   }
 }'
 
+
+  full_request = JSON.parse(request)
+
   json = JSON.parse(stuff)
 
   DataGenerator.generate_data(json)
 
-  puts JSON.pretty_generate(json)
+  # puts JSON.pretty_generate(json)
 
   simple_json_array = JSON.parse('{
   "name": "hi",
@@ -226,13 +289,15 @@ if __FILE__ == $0
   },
   "surname": "bergman"}')
 
+
+
   fudge_spec = JSON.parse(simple_fudge_array)
 
 
+  full_request['request']['body'] = json
 
-
-  df = DataFudger.new(json, fudge_spec)
-
+  df = DataFudger.new(full_request, fudge_spec)
+  puts JSON.pretty_generate(df.origin_request)
 
 
   df.run

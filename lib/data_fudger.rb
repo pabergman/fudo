@@ -3,19 +3,18 @@ require 'json'
 class DataFudger
 
   attr_reader :fudged_data
-  attr_reader :origin_data
   attr_reader :origin_request
 
-  def initialize(origin_data, fudger_spec, origin_request)
+  def initialize(origin_request, fudger_spec)
     @fudged_data = Array.new
-    @origin_data = origin_data
+    @request_body = origin_request['request']['body']
     @origin_request = origin_request
     @fudger_spec = fudger_spec
     @depth = Array.new
   end
 
 
-  def run(input = @origin_data)
+  def run(input = @origin_request['request']['body'])
     input.each do |key, value|
       case value.class.to_s
       when 'Hash'
@@ -38,7 +37,7 @@ class DataFudger
     @depth.pop
   end
 
-  def run_array(input = @origin_data)
+  def run_array(input = @origin_request['request']['body'])
     input.each_with_index do |value, index|
       case value.class.to_s
       when 'Hash'
@@ -111,36 +110,40 @@ class DataFudger
     value
   end
 
+  def add_to_fudged(fudged_request, message, status)
+    fudged_request['response']['message'] = message
+    fudged_request['response']['status'] = status
+    @fudged_data << fudged_request
+  end
+
 
   def depth_0(key)
-  	y = Marshal.load(Marshal.dump(@origin_request))
-  	m = y['request']['body']
-    # m = Marshal.load(Marshal.dump(@origin_data))
+    y = Marshal.load(Marshal.dump(@origin_request))
+    m = y['request']['body']
     snowflake(m)
     m.delete(key)
     if(@fudger_spec[key]['restrictions']['required'])
-      # @fudged_data << {"status" => 400, "message"=> "#{key} is a required field", "body" => m}
-      y['response']['message'] = "#{key} is a required field"
-      y['response']['status'] = 400;
-      @fudged_data << y
+      add_to_fudged(y, "#{key} is a required field", 400)
     else
-      @fudged_data << {"status" => 200, "message"=> "#{key} is not a required field", "body" => m}
+      add_to_fudged(y, "#{key} is not a required field",200)
     end
 
     if(@fudger_spec[key]['type'] == 'value')
-      m = Marshal.load(Marshal.dump(@origin_data))
+      y = Marshal.load(Marshal.dump(@origin_request))
+      m = y['request']['body']
       snowflake(m)
-      m[key] = @origin_data[key]
+      m[key] = @request_body[key]
       if(@fudger_spec[key]['restrictions']['unique'])
-        @fudged_data << {"status" => 400, "message"=> "#{key} should be unique", "body" => m}
+        add_to_fudged(y, "#{key} should be unique",  400)
       else
-        @fudged_data << {"status" => 200, "message"=> "#{key} should not need to be a unique field", "body" => m}
+        add_to_fudged(y, "#{key} should not need to be a unique field", 200)
       end
     end
   end
 
   def depth_1(key)
-    m = Marshal.load(Marshal.dump(@origin_data))
+    y = Marshal.load(Marshal.dump(@origin_request))
+    m = y['request']['body']
     snowflake(m)
     if(m[@depth[0]].class.to_s == 'Hash')
       m[@depth[0]].delete(key)
@@ -149,42 +152,44 @@ class DataFudger
     end
 
     if(@fudger_spec[@depth[0]]['properties'][key]['restrictions']['required'])
-      @fudged_data << {"status" => 400, "message"=> "#{key} is a required field", "body" => m}
+      add_to_fudged(y, "#{key} is a required field", 400)
     else
-      @fudged_data << {"status" => 200, "message"=> "#{key} is not a required field", "body" => m}
-
+      add_to_fudged(y, "#{key} is not a required field", 200)
     end
 
     if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'value')
-      m = Marshal.load(Marshal.dump(@origin_data))
+      y = Marshal.load(Marshal.dump(@origin_request))
+      m = y['request']['body']
       snowflake(m)
-      m[@depth[0]][key] = @origin_data[@depth[0]][key]
+      m[@depth[0]][key] = @request_body[@depth[0]][key]
       if(@fudger_spec[@depth[0]]['properties'][key]['restrictions']['unique'])
-        @fudged_data << {"status" => 400, "message"=> "#{key} should be unique", "body" => m }
+        add_to_fudged(y, "#{key} should be unique",  400)
       else
-        @fudged_data << {"status" => 200, "message"=> "#{key} should not need to be a unique field", "body" => m}
+        add_to_fudged(y, "#{key} should not need to be a unique field", 200)
       end
     end
   end
 
   def depth_2(key)
-    m = Marshal.load(Marshal.dump(@origin_data))
+    y = Marshal.load(Marshal.dump(@origin_request))
+    m = y['request']['body']
     snowflake(m)
     m[@depth[0]][@depth[1]].delete(key)
     if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['restrictions']['required'])
-      @fudged_data << {"status" => 400, "message"=> "#{key} is a required field", "body" => m}
+      add_to_fudged(y, "#{key} is a required field", 400)
     else
-      @fudged_data << {"status" => 200, "message"=> "#{key} is not a required field", "body" => m}
+      add_to_fudged(y, "#{key} is not a required field", 200)
     end
 
     if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'value')
-      m = Marshal.load(Marshal.dump(@origin_data))
+      y = Marshal.load(Marshal.dump(@origin_request))
+      m = y['request']['body']
       snowflake(m)
-      m[@depth[0]][@depth[1]][key] = @origin_data[@depth[0]][@depth[1]][key]
+      m[@depth[0]][@depth[1]][key] = @request_body[@depth[0]][@depth[1]][key]
       if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['restrictions']['unique'])
-        @fudged_data << {"status" => 400, "message"=> "#{key} should be unique", "body" => m }
+        add_to_fudged(y, "#{key} should be unique",  400)
       else
-        @fudged_data << {"status" => 200, "message"=> "#{key} should not need to be a unique field", "body" => m}
+        add_to_fudged(y, "#{key} should not need to be a unique field", 200)
       end
     end
 
