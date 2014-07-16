@@ -60,8 +60,6 @@ class DataFudger
   end
 
   def dostuff(key)
-    m = Marshal.load(Marshal.dump(@origin_data))
-    snowflake(m)
 
     case @depth.size
     when 0
@@ -115,12 +113,16 @@ class DataFudger
 
 
   def depth_0(key)
-
-    m = Marshal.load(Marshal.dump(@origin_data))
+  	y = Marshal.load(Marshal.dump(@origin_request))
+  	m = y['request']['body']
+    # m = Marshal.load(Marshal.dump(@origin_data))
     snowflake(m)
     m.delete(key)
     if(@fudger_spec[key]['restrictions']['required'])
-      @fudged_data << {"status" => 400, "message"=> "#{key} is a required field", "body" => m}
+      # @fudged_data << {"status" => 400, "message"=> "#{key} is a required field", "body" => m}
+      y['response']['message'] = "#{key} is a required field"
+      y['response']['status'] = 400;
+      @fudged_data << y
     else
       @fudged_data << {"status" => 200, "message"=> "#{key} is not a required field", "body" => m}
     end
