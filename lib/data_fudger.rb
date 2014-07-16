@@ -4,10 +4,12 @@ class DataFudger
 
   attr_reader :fudged_data
   attr_reader :origin_data
+  attr_reader :origin_request
 
-  def initialize(origin_data, fudger_spec)
+  def initialize(origin_data, fudger_spec, origin_request)
     @fudged_data = Array.new
     @origin_data = origin_data
+    @origin_request = origin_request
     @fudger_spec = fudger_spec
     @depth = Array.new
   end
@@ -113,6 +115,7 @@ class DataFudger
 
 
   def depth_0(key)
+
     m = Marshal.load(Marshal.dump(@origin_data))
     snowflake(m)
     m.delete(key)
