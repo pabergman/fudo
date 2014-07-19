@@ -1,0 +1,8 @@
+{
+	"tests" : {
+		"uniqueness": {
+			"oneunique": "oneunique.json",
+			"twounique": "twounique.son"
+		}
+	}
+}

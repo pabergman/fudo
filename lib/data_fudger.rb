@@ -5,11 +5,11 @@ class DataFudger
   attr_reader :fudged_data
   attr_reader :origin_request
 
-  def initialize(origin_request, fudger_spec)
+  def initialize(origin_request)
     @fudged_data = Array.new
     @request_body = origin_request['request']['body']
     @origin_request = origin_request
-    @fudger_spec = fudger_spec
+    @fudger_spec = origin_request['request']['body_fudge_def']
     @depth = Array.new
   end
 
@@ -134,7 +134,7 @@ class DataFudger
       snowflake(m)
       m[key] = @request_body[key]
       if(@fudger_spec[key]['restrictions']['unique'])
-        add_to_fudged(y, "#{key} should be unique",  400)
+        add_to_fudged(y, "#{key} should be unique",  409)
       else
         add_to_fudged(y, "#{key} should not need to be a unique field", 200)
       end
@@ -163,7 +163,7 @@ class DataFudger
       snowflake(m)
       m[@depth[0]][key] = @request_body[@depth[0]][key]
       if(@fudger_spec[@depth[0]]['properties'][key]['restrictions']['unique'])
-        add_to_fudged(y, "#{key} should be unique",  400)
+        add_to_fudged(y, "#{key} should be unique",  409)
       else
         add_to_fudged(y, "#{key} should not need to be a unique field", 200)
       end
@@ -187,7 +187,7 @@ class DataFudger
       snowflake(m)
       m[@depth[0]][@depth[1]][key] = @request_body[@depth[0]][@depth[1]][key]
       if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['restrictions']['unique'])
-        add_to_fudged(y, "#{key} should be unique",  400)
+        add_to_fudged(y, "#{key} should be unique",  409)
       else
         add_to_fudged(y, "#{key} should not need to be a unique field", 200)
       end
