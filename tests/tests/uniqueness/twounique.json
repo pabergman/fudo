@@ -1,0 +1,55 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "http://localhost:4567/unique/twounique",
+    "headers": {},
+    "body": {
+      "firstname": {
+        "type": "value",
+        "properties": {
+          "source": "ffaker",
+          "value": {
+            "class": "Name",
+            "method": "first_name"
+          },
+          "inputs": []
+        }
+      },
+      "surname": {
+        "type": "value",
+        "properties": {
+          "source": "ffaker",
+          "value": {
+            "class": "Name",
+            "method": "last_name"
+          },
+          "inputs": []
+        }
+      }
+    },
+    "body_fudge_def": {
+      "firstname": {
+        "type": "value",
+        "donotmodify": false,
+        "restrictions": {
+          "required": false,
+          "unique": true
+        }
+      },
+      "surname": {
+        "type": "value",
+        "donotmodify": false,
+        "restrictions": {
+          "required": false,
+          "unique": true
+        }
+      }
+    }
+  },
+  "response": {
+    "body": {},
+    "headers": {},
+    "status": 200,
+    "message": "should pass"
+  }
+}
