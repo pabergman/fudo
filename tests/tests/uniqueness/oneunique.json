@@ -6,6 +6,12 @@
     "body": {
       "name": {
         "type": "value",
+        "rules": {
+          "value-type": "String",
+          "donotmodify": false,
+          "required": false,
+          "unique": true
+        },
         "properties": {
           "source": "ffaker",
           "value": {
@@ -14,15 +20,74 @@
           },
           "inputs": []
         }
-      }
-    },
-    "body_fudge_def": {
-      "name": {
-        "type": "value",
-        "donotmodify": false,
-        "restrictions": {
+      },
+      "name2": {
+        "type": "object",
+        "rules": {
+          "value-type": "Object",
+          "donotmodify": false,
           "required": false,
           "unique": true
+        },
+        "properties": {
+          "surnamex": {
+            "type": "value",
+            "rules": {
+              "value-type": "String",
+              "donotmodify": false,
+              "required": false,
+              "unique": true
+            },
+            "properties": {
+              "source": "ffaker",
+              "value": {
+                "class": "Name",
+                "method": "last_name"
+              },
+              "inputs": []
+            }
+          },
+          "firstname": {
+            "type": "value",
+            "rules": {
+              "value-type": "String",
+              "donotmodify": false,
+              "required": false,
+              "unique": true
+            },
+            "properties": {
+              "source": "ffaker",
+              "value": {
+                "class": "Name",
+                "method": "first_name"
+              },
+              "inputs": []
+            }
+          },
+          "whynowork": {
+            "type": "object",
+            "rules": {
+              "value-type": "Object",
+              "donotmodify": false,
+              "required": false,
+              "unique": true
+            },
+            "properties": {
+              "add1": {
+                "type": "value",
+                "rules": {
+                  "value-type": "Object",
+                  "donotmodify": false,
+                  "required": false,
+                  "unique": true
+                },
+                "properties": {
+                  "source": "fixed",
+                  "value": "addline1"
+                }
+              }
+            }
+          }
         }
       }
     }

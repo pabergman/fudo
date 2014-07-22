@@ -10,15 +10,24 @@ require_relative 'fudo'
 
 if __FILE__ == $0
 
+
+
   commandlineinput = "uniqueness/oneunique"
 
   full_request = JSON.parse(open(Fudo::CONFIG.access('root_dir') + "tests/" + commandlineinput + ".json").read)
 
+  y = Marshal.load(Marshal.dump(full_request['request']['body']))
+
   DataGenerator.generate_data(full_request['request']['body'])
+
+  full_request['request']['bodysrc'] = y
 
   df = DataFudger.new(full_request)
 
   df.run
+
+  puts JSON.pretty_generate(df.fudged_data)
+
   request = Typhoeus::Request.new(
     full_request['request']['url'],
     method: full_request['request']['method'],

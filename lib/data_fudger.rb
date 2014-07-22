@@ -9,7 +9,7 @@ class DataFudger
     @fudged_data = Array.new
     @request_body = origin_request['request']['body']
     @origin_request = origin_request
-    @fudger_spec = origin_request['request']['body_fudge_def']
+    @fudger_spec = origin_request['request']['bodysrc']
     @depth = Array.new
   end
 
@@ -111,6 +111,7 @@ class DataFudger
   end
 
   def add_to_fudged(fudged_request, message, status)
+    fudged_request['request'].delete('bodysrc')
     fudged_request['response']['message'] = message
     fudged_request['response']['status'] = status
     @fudged_data << fudged_request
@@ -122,7 +123,7 @@ class DataFudger
     m = y['request']['body']
     snowflake(m)
     m.delete(key)
-    if(@fudger_spec[key]['restrictions']['required'])
+    if(@fudger_spec[key]['rules']['required'])
       add_to_fudged(y, "#{key} is a required field", 400)
     else
       add_to_fudged(y, "#{key} is not a required field",200)
@@ -133,7 +134,7 @@ class DataFudger
       m = y['request']['body']
       snowflake(m)
       m[key] = @request_body[key]
-      if(@fudger_spec[key]['restrictions']['unique'])
+      if(@fudger_spec[key]['rules']['unique'])
         add_to_fudged(y, "#{key} should be unique",  409)
       else
         add_to_fudged(y, "#{key} should not need to be a unique field", 200)
@@ -151,7 +152,7 @@ class DataFudger
       m[@depth[0]][key] = nil
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][key]['restrictions']['required'])
+    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['required'])
       add_to_fudged(y, "#{key} is a required field", 400)
     else
       add_to_fudged(y, "#{key} is not a required field", 200)
@@ -162,7 +163,7 @@ class DataFudger
       m = y['request']['body']
       snowflake(m)
       m[@depth[0]][key] = @request_body[@depth[0]][key]
-      if(@fudger_spec[@depth[0]]['properties'][key]['restrictions']['unique'])
+      if(@fudger_spec[@depth[0]]['properties'][key]['rules']['unique'])
         add_to_fudged(y, "#{key} should be unique",  409)
       else
         add_to_fudged(y, "#{key} should not need to be a unique field", 200)
@@ -175,7 +176,7 @@ class DataFudger
     m = y['request']['body']
     snowflake(m)
     m[@depth[0]][@depth[1]].delete(key)
-    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['restrictions']['required'])
+    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['required'])
       add_to_fudged(y, "#{key} is a required field", 400)
     else
       add_to_fudged(y, "#{key} is not a required field", 200)
@@ -186,7 +187,7 @@ class DataFudger
       m = y['request']['body']
       snowflake(m)
       m[@depth[0]][@depth[1]][key] = @request_body[@depth[0]][@depth[1]][key]
-      if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['restrictions']['unique'])
+      if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['unique'])
         add_to_fudged(y, "#{key} should be unique",  409)
       else
         add_to_fudged(y, "#{key} should not need to be a unique field", 200)
