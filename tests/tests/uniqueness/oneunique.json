@@ -8,7 +8,7 @@
         "type": "value",
         "rules": {
           "value-type": "String",
-          "donotmodify": false,
+          "donotmodify": true,
           "required": false,
           "unique": true
         },
@@ -76,14 +76,14 @@
               "add1": {
                 "type": "value",
                 "rules": {
-                  "value-type": "Object",
+                  "value-type": "Fixnum",
                   "donotmodify": false,
                   "required": false,
                   "unique": true
                 },
                 "properties": {
                   "source": "fixed",
-                  "value": "addline1"
+                  "value": 10
                 }
               }
             }
