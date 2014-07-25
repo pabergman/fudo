@@ -10,11 +10,9 @@ require_relative 'fudo'
 
 if __FILE__ == $0
 
+  commandlineinput = ARGV[0]
 
-
-  commandlineinput = "uniqueness/oneunique"
-
-  full_request = JSON.parse(open(Fudo::CONFIG.access('root_dir') + "tests/" + commandlineinput + ".json").read)
+  full_request = JSON.parse(open(Fudo::CONFIG['root_dir'] + "/tests/" + Fudo::TEST_ROOT[commandlineinput]).read)
 
   y = Marshal.load(Marshal.dump(full_request['request']['body']))
 
