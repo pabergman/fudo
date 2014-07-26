@@ -109,7 +109,7 @@ class DataFudger
     end
     value
   end
- 
+
   def depth_0(key)
 
     clone = clone_request(key)
@@ -167,6 +167,16 @@ class DataFudger
       set_unique(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
     end
 
+    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'boolean')
+      clone = clone_request(key)
+      boolean_int(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key)
+    end
+
+    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'boolean')
+      clone = clone_request(key)
+      boolean_string(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key)
+    end   
+
   end
 
   def clone_request(key)
@@ -175,12 +185,30 @@ class DataFudger
     return [y, y['request']['body']]
   end
 
-   def add_to_fudged(fudged_request, message, status, severity=100)
+  def add_to_fudged(fudged_request, message, status, severity=100)
     fudged_request['request'].delete('bodysrc')
     fudged_request['response']['message'] = message
     fudged_request['response']['status'] = status
-    fudged_request['response']['severity'] = severity    
+    fudged_request['response']['severity'] = severity
     @fudged_data << fudged_request
+  end
+
+  def boolean_int(y, m, key)
+    if(m[key])
+      m[key] = 1
+    else
+      m[key] = 0
+    end
+    add_to_fudged(y, "The key #{key} switched from boolean to an equivalent smallint.", 400, 2)
+  end
+
+  def boolean_string(y, m, key)
+    if(m[key])
+      m[key] = "true"
+    else
+      m[key] = "false"
+    end
+    add_to_fudged(y, "The key #{key} switched from boolean to an equivalent string.", 400, 2)
   end
 
   def delete(y, m, key, rules)
@@ -218,9 +246,9 @@ class DataFudger
   def set_unique(y, m, original, key, rules)
     m[key] = original[key]
     if(rules['unique'])
-      add_to_fudged(y, "Tried to make two request with the same #{key} which is unique.",  409, 1)
+      add_to_fudged(y, "Tried to make two requests with the same #{key}, should need to be unique.",  409, 1)
     else
-      add_to_fudged(y, "Tried to make two request with the same #{key} which is unique.", 200, 1)
+      add_to_fudged(y, "Tried to make two requests with the same #{key}, should not need to be unique!", 200, 1)
     end
   end
 

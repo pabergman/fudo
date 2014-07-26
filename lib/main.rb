@@ -24,7 +24,6 @@ if __FILE__ == $0
 
   df.run
 
-  puts JSON.pretty_generate(df.fudged_data)
 
   request = Typhoeus::Request.new(
     full_request['request']['url'],
@@ -38,8 +37,9 @@ if __FILE__ == $0
 
   hydra = Typhoeus::Hydra.hydra
 
-  bad_reqs = Array.new
+  outputjson = Array.new
 
+  failures =
   df.fudged_data.each do | value |
 
     bad_reqs = Typhoeus::Request.new(
@@ -51,9 +51,16 @@ if __FILE__ == $0
     )
     bad_reqs.on_complete do | response |
       if (response.code != value['response']['status'])
-        puts "FAILURE: Expected status code #{value['response']['status']} but got #{response.code}, message is: #{value['response']['message']}"
+        if(value['response']['status'].between?(400, 499) && response.code.between?(400,499))
+          value['response']['severity'] -= 1
+        elsif(value['response']['status'].between?(200, 299) && response.code.between?(200,299))
+          value['response']['severity'] -= 1
+        end
+        outputjson << {:severity => value['response']['severity'], :expected => value['response']['status'],
+                       :received => response.code, :message => value['response']['message'], :request => value['request']}
       else
-        puts "SUCCESS: Expected status code #{value['response']['status']} and got #{response.code}, message is: #{value['response']['message']}"
+        outputjson << {:severity => 100, :expected => value['response']['status'],
+                       :received => response.code, :message => value['response']['message'], :request => value['request']}
       end
     end
 
@@ -63,4 +70,5 @@ if __FILE__ == $0
 
   hydra.run
 
+  puts outputjson.to_json
 end
