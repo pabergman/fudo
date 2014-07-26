@@ -127,9 +127,16 @@ class DataFudger
 
     if(@fudger_spec[key]['rules']['value-type'] == 'boolean')
       clone = clone_request(key)
-      boolean_int(clone[0], clone[1], @request_body, key)
+      boolean_int(clone[0], clone[1], key)
       clone = clone_request(key)
-      boolean_string(clone[0], clone[1], @request_body, key)
+      boolean_string(clone[0], clone[1], key)
+    end
+
+    if(@fudger_spec[key]['rules']['value-type'] == 'password')
+      clone = clone_request(key)
+      short_password(clone[0], clone[1], key)
+      clone = clone_request(key)
+      weak_password(clone[0], clone[1], key)
     end
 
   end
@@ -150,9 +157,16 @@ class DataFudger
 
     if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'boolean')
       clone = clone_request(key)
-      boolean_int(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key)
+      boolean_int(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
-      boolean_string(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key)
+      boolean_string(clone[0], clone[1][@depth[0]], key)
+    end
+
+    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'password')
+      clone = clone_request(key)
+      short_password(clone[0], clone[1][@depth[0]], key)
+      clone = clone_request(key)
+      weak_password(clone[0], clone[1][@depth[0]], key)
     end
 
   end
@@ -174,9 +188,16 @@ class DataFudger
 
     if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['value-type'] == 'boolean')
       clone = clone_request(key)
-      boolean_int(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key)
+      boolean_int(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
-      boolean_string(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key)
+      boolean_string(clone[0], clone[1][@depth[0]][@depth[1]], key)
+    end
+
+    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['value-type'] == 'password')
+      clone = clone_request(key)
+      short_password(clone[0], clone[1][@depth[0]][@depth[1]], key)
+      clone = clone_request(key)
+      weak_password(clone[0], clone[1][@depth[0]][@depth[1]], key)
     end
 
   end
@@ -211,6 +232,16 @@ class DataFudger
       m[key] = "false"
     end
     add_to_fudged(y, "The key #{key} switched from boolean to an equivalent string.", 400, 2)
+  end
+
+  def short_password(y, m, key)
+    m[key] = "nK!c"
+    add_to_fudged(y, "The password for key #{key} was set to nK!c and is too short.", 400, 1)
+  end
+
+  def weak_password(y, m, key)
+    m[key] = "helloworld"
+    add_to_fudged(y, "The password for key #{key} was set to helloworld and is considered weak.", 400, 1)
   end
 
   def delete(y, m, key, rules)
