@@ -140,6 +140,14 @@ class DataFudger
       weak_password(clone[0], clone[1], key)
     end
 
+    if(@fudger_spec[key]['rules']['value-type'] == 'email' &&
+       @fudger_spec[key]['rules']['donotmodify'] == false)
+      clone = clone_request(key)
+      incorrect_email(clone[0], clone[1], key)
+      clone = clone_request(key)
+      correct_email(clone[0], clone[1], key)
+    end
+
   end
 
   def depth_1(key)
@@ -169,6 +177,14 @@ class DataFudger
       short_password(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       weak_password(clone[0], clone[1][@depth[0]], key)
+    end
+
+    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'email' &&
+       @fudger_spec[@depth[0]]['properties'][key]['rules']['donotmodify'] == false)
+      clone = clone_request(key)
+      incorrect_email(clone[0], clone[1][@depth[0]], key)
+      clone = clone_request(key)
+      correct_email(clone[0], clone[1][@depth[0]], key)
     end
 
   end
@@ -201,6 +217,14 @@ class DataFudger
       short_password(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
       weak_password(clone[0], clone[1][@depth[0]][@depth[1]], key)
+    end
+
+    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['value-type'] == 'email' &&
+       @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['donotmodify'] == false)
+      clone = clone_request(key)
+      incorrect_email(clone[0], clone[1][@depth[0]][@depth[1]], key)
+      clone = clone_request(key)
+      correct_email(clone[0], clone[1][@depth[0]][@depth[1]], key)
     end
 
   end
@@ -245,6 +269,16 @@ class DataFudger
   def weak_password(y, m, key)
     m[key] = "helloworld"
     add_to_fudged(y, "The password for key #{key} was set to helloworld and is considered weak.", 400, 1)
+  end
+
+  def incorrect_email(y, m, key)
+    m[key] = m[key].sub "@", ""
+    add_to_fudged(y, "The email for key #{key} is not an valid email.", 400, 1)
+  end
+
+  def correct_email(y, m, key)
+    m[key] = m[key].sub ".", ""
+    add_to_fudged(y, "The email for key #{key} is an valid email.", 200, 2)
   end
 
   def delete(y, m, key, rules)
