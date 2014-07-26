@@ -109,15 +109,7 @@ class DataFudger
     end
     value
   end
-
-  def add_to_fudged(fudged_request, message, status)
-    fudged_request['request'].delete('bodysrc')
-    fudged_request['response']['message'] = message
-    fudged_request['response']['status'] = status
-    @fudged_data << fudged_request
-  end
-
-
+ 
   def depth_0(key)
 
     clone = clone_request(key)
@@ -176,41 +168,49 @@ class DataFudger
     end
 
   end
-  
+
   def clone_request(key)
     y = Marshal.load(Marshal.dump(@origin_request))
     snowflake(y['request']['body'])
     return [y, y['request']['body']]
   end
 
+   def add_to_fudged(fudged_request, message, status, severity=100)
+    fudged_request['request'].delete('bodysrc')
+    fudged_request['response']['message'] = message
+    fudged_request['response']['status'] = status
+    fudged_request['response']['severity'] = severity    
+    @fudged_data << fudged_request
+  end
+
   def delete(y, m, key, rules)
     m.delete(key)
     if(rules['required'])
-      add_to_fudged(y, "#{key} is a required field", 400)
+      add_to_fudged(y, "The key #{key} was removed from the JSON object.", 400, 1)
     else
-      add_to_fudged(y, "#{key} is not a required field",200)
+      add_to_fudged(y, "The key #{key} was removed from the JSON object.", 200, 2)
     end
   end
 
   def set_nil(y, m, key, rules)
     m[key] = nil
     if(rules['required'])
-      add_to_fudged(y, "#{key} is a required field (nil error)", 400)
+      add_to_fudged(y, "The value for #{key} was set to null.", 400, 1)
     else
-      add_to_fudged(y, "#{key} is not a required field (nil error)",200)
+      add_to_fudged(y, "The value for #{key} was set to null.", 200, 2)
     end
   end
 
   def change_type(y, m, key, rules)
     if(rules['value-type'] == "String")
-      m[key] = rand(10000)
-      add_to_fudged(y, "#{key} is a should be a string!", 400)
+      m[key] = false
+      add_to_fudged(y, "Replaced #{key} with an boolean instead of string.", 400, 2)
     elsif(rules['value-type'] == "Fixnum")
-      m[key] = m[key].to_s
-      add_to_fudged(y, "#{key} is a should be a integer!", 400)
+      m[key] = "wrongvalue"
+      add_to_fudged(y, "Replaced #{key} with a string instead of integer.", 400, 1)
     elsif(rules['value-type'] == "boolean")
-      m[key] = "true"
-      add_to_fudged(y, "#{key} is a should be a boolean!", 010)
+      m[key] = "wrongvalue"
+      add_to_fudged(y, "Replaced #{key} with a string instead of boolean.", 400, 1)
     end
 
   end
@@ -218,9 +218,9 @@ class DataFudger
   def set_unique(y, m, original, key, rules)
     m[key] = original[key]
     if(rules['unique'])
-      add_to_fudged(y, "#{key} should be unique",  409)
+      add_to_fudged(y, "Tried to make two request with the same #{key} which is unique.",  409, 1)
     else
-      add_to_fudged(y, "#{key} should not need to be a unique field", 200)
+      add_to_fudged(y, "Tried to make two request with the same #{key} which is unique.", 200, 1)
     end
   end
 
