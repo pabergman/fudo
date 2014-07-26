@@ -132,7 +132,8 @@ class DataFudger
       boolean_string(clone[0], clone[1], key)
     end
 
-    if(@fudger_spec[key]['rules']['value-type'] == 'password')
+    if(@fudger_spec[key]['rules']['value-type'] == 'password' &&
+       @fudger_spec[key]['rules']['donotmodify'] == false)
       clone = clone_request(key)
       short_password(clone[0], clone[1], key)
       clone = clone_request(key)
@@ -162,7 +163,8 @@ class DataFudger
       boolean_string(clone[0], clone[1][@depth[0]], key)
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'password')
+    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'password' &&
+       @fudger_spec[@depth[0]]['properties'][key]['rules']['donotmodify'] == false)
       clone = clone_request(key)
       short_password(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
@@ -193,7 +195,8 @@ class DataFudger
       boolean_string(clone[0], clone[1][@depth[0]][@depth[1]], key)
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['value-type'] == 'password')
+    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['value-type'] == 'password' &&
+       @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['donotmodify'] == false)
       clone = clone_request(key)
       short_password(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
