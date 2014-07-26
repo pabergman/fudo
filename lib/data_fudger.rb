@@ -103,7 +103,7 @@ class DataFudger
 
   def snowflake_value(value,  i = @fudged_data.size)
     if(value.kind_of?(String))
-      value.insert(0, "#{i}__") 
+      value.prepend("#{i}__")
     elsif(value.kind_of?(Fixnum))
       value += i
     end
@@ -119,85 +119,68 @@ class DataFudger
 
 
   def depth_0(key)
-    y = Marshal.load(Marshal.dump(@origin_request))
-    m = y['request']['body']
-    snowflake(m)
-    delete(y, m, key, @fudger_spec[key]['rules'])
 
-    y = Marshal.load(Marshal.dump(@origin_request))
-    m = y['request']['body']
-    snowflake(m)
-    set_nil(y, m, key, @fudger_spec[key]['rules'])
+    clone = clone_request(key)
+    delete(clone[0], clone[1], key, @fudger_spec[key]['rules'])
+
+    clone = clone_request(key)
+    set_nil(clone[0], clone[1], key, @fudger_spec[key]['rules'])
 
     if(@fudger_spec[key]['type'] == 'value')
-      y = Marshal.load(Marshal.dump(@origin_request))
-      m = y['request']['body']
-      snowflake(m)
-      change_type(y, m, key, @fudger_spec[key]['rules'])
+      clone = clone_request(key)
+      change_type(clone[0], clone[1], key, @fudger_spec[key]['rules'])
     end
 
     if(@fudger_spec[key]['type'] == 'value')
-      y = Marshal.load(Marshal.dump(@origin_request))
-      m = y['request']['body']
-      snowflake(m)
-      set_unique(y, m, @request_body, key, @fudger_spec[key]['rules'])
+      clone = clone_request(key)
+      set_unique(clone[0], clone[1], @request_body, key, @fudger_spec[key]['rules'])
     end
 
   end
 
   def depth_1(key)
-    y = Marshal.load(Marshal.dump(@origin_request))
-    m = y['request']['body']
-    snowflake(m)
-    delete(y, m[@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+    clone = clone_request(key)
+    delete(clone[0], clone[1][@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
 
-    y = Marshal.load(Marshal.dump(@origin_request))
-    m = y['request']['body']
-    snowflake(m)
-    set_nil(y, m[@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+    clone = clone_request(key)
+    set_nil(clone[0], clone[1][@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
 
     if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'value')
-      y = Marshal.load(Marshal.dump(@origin_request))
-      m = y['request']['body']
-      snowflake(m)
-      change_type(y, m[@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+      clone = clone_request(key)
+      change_type(clone[0], clone[1][@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
     end
 
     if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'value')
-      y = Marshal.load(Marshal.dump(@origin_request))
-      m = y['request']['body']
-      snowflake(m)
-      set_unique(y, m[@depth[0]], @request_body[@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+      clone = clone_request(key)
+      set_unique(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
     end
 
   end
 
   def depth_2(key)
 
-    y = Marshal.load(Marshal.dump(@origin_request))
-    m = y['request']['body']
-    snowflake(m)
-    delete(y, m[@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
+    clone = clone_request(key)
+    delete(clone[0], clone[1][@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
 
-    y = Marshal.load(Marshal.dump(@origin_request))
-    m = y['request']['body']
-    snowflake(m)
-    set_nil(y, m[@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
+    clone = clone_request(key)
+    set_nil(clone[0], clone[1][@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
 
     if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'value')
-      y = Marshal.load(Marshal.dump(@origin_request))
-      m = y['request']['body']
-      snowflake(m)
-      change_type(y, m[@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
+      clone = clone_request(key)
+      change_type(clone[0], clone[1][@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
     end
 
     if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'value')
-      y = Marshal.load(Marshal.dump(@origin_request))
-      m = y['request']['body']
-      snowflake(m)
-      set_unique(y, m[@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
+      clone = clone_request(key)
+      set_unique(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
     end
 
+  end
+  
+  def clone_request(key)
+    y = Marshal.load(Marshal.dump(@origin_request))
+    snowflake(y['request']['body'])
+    return [y, y['request']['body']]
   end
 
   def delete(y, m, key, rules)
@@ -227,7 +210,7 @@ class DataFudger
       add_to_fudged(y, "#{key} is a should be a integer!", 400)
     elsif(rules['value-type'] == "boolean")
       m[key] = "true"
-      add_to_fudged(y, "#{key} is a should be a boolean!", 400)
+      add_to_fudged(y, "#{key} is a should be a boolean!", 010)
     end
 
   end
