@@ -66,16 +66,33 @@ class FudoJsonGenerator
 
 end
 
-# shittystring = '[{"status": "new", "name": "alex", "id": 10},{"status": "new", "name": "alex", "id": 11}]'
-# shittystring = '{"status": "new", "name": "alex", "id": {"status": "new", "name": [2,3,4,5]}}'
-shittystring = '{"status": "new", "name": "alex", "id": {"status": "new"}}'
+if __FILE__ == $0
+
+  puts "What method? (POST, PUT, GET, DELETE)"
+  method = gets.chomp
+  puts "What URL?"
+  url = gets.chomp
+
+  if(method == "POST" || method == "PUT")
+    puts "Request body JSON please."
+    input = JSON.parse(gets.chomp)
+    request_body = JSON.parse("{}")
+    FudoJsonGenerator.master(input, request_body)
+  else
+    request_body = JSON.parse("{}")
+  end
+
+  puts "Response body JSON please."
+  response_body = JSON.parse(gets.chomp)
 
 
-output = JSON.parse("{}")
-input = JSON.parse(shittystring)
+  fudo_request = {"request" => {"method" => method, "url" => url, "headers" => {}, "body" => request_body},
+                  "response" => {"body" => response_body, "headers" => {}, "status" => 200, "message" => "should pass"}}
 
+  # shittystring = '[{"status": "new", "name": "alex", "id": 10},{"status": "new", "name": "alex", "id": 11}]'
+  # shittystring = '{"status": "new", "name": "alex", "id": {"status": "new", "name": [2,3,4,5]}}'
+  # shittystring = '{"status": "new", "name": "alex", "id": {"status": "new"}}'
 
-FudoJsonGenerator.master(input, output)
+  puts JSON.pretty_generate(fudo_request)
 
-puts JSON.pretty_generate(output)
-
+end
