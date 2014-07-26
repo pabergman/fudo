@@ -131,9 +131,6 @@ class DataFudger
     if(@fudger_spec[key]['type'] == 'boolean')
       clone = clone_request(key)
       boolean_int(clone[0], clone[1], @request_body, key)
-    end
-
-    if(@fudger_spec[key]['type'] == 'boolean')
       clone = clone_request(key)
       boolean_string(clone[0], clone[1], @request_body, key)
     end
@@ -160,9 +157,6 @@ class DataFudger
     if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'boolean')
       clone = clone_request(key)
       boolean_int(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key)
-    end
-
-    if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'boolean')
       clone = clone_request(key)
       boolean_string(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key)
     end
@@ -190,9 +184,6 @@ class DataFudger
     if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'boolean')
       clone = clone_request(key)
       boolean_int(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key)
-    end
-
-    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'boolean')
       clone = clone_request(key)
       boolean_string(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key)
     end
