@@ -1,8 +1,4 @@
 {
-	"tests" : {
-		"uniqueness": {
-			"oneunique": "oneunique.json",
-			"twounique": "twounique.son"
-		}
-	}
+  "oneunique": "uniqueness/oneunique.json",
+  "twounique": "uniqueness/twounique.json"
 }

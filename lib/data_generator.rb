@@ -1,6 +1,5 @@
 require 'ffaker'
 require 'active_support/all'
-require 'vine'
 
 class DataGenerator
 

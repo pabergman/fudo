@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'json'
 require 'typhoeus'
-require 'vine'
 require_relative 'response_checker'
 require_relative 'data_generator'
 require_relative 'data_fudger'
@@ -56,11 +55,11 @@ if __FILE__ == $0
         elsif(value['response']['status'].between?(200, 299) && response.code.between?(200,299))
           value['response']['severity'] -= 1
         end
-        outputjson << {:severity => value['response']['severity'], :expected => value['response']['status'],
-                       :received => response.code, :message => value['response']['message'], :request => value['request']}
+        outputjson << {"severity" => value['response']['severity'], "expected" => value['response']['status'],
+                       "received" => response.code, "message" => value['response']['message'], "request" => value['request']}
       else
-        outputjson << {:severity => 100, :expected => value['response']['status'],
-                       :received => response.code, :message => value['response']['message'], :request => value['request']}
+        outputjson << {"severity" => 100, "expected" => value['response']['status'],
+                       "received" => response.code, "message" => value['response']['message'], "request" => value['request']}
       end
     end
 
@@ -70,5 +69,12 @@ if __FILE__ == $0
 
   hydra.run
 
-  puts outputjson.to_json
+  puts "Severity | Expected | Received | Message"
+
+  outputjson.each do | value |
+
+    puts "#{value['severity']}        | #{value['expected']}      | #{value['received']}        | #{value['message']}"
+
+  end
+
 end

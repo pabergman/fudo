@@ -18,18 +18,18 @@ class FudoJsonGenerator
 
   def self.array(input, output)
 
-    output['apitesting::type'] = "array"
-    output['parameters'] = Hash.new
-    output['parameters']['min'] = 0
-    output['parameters']['max'] = input.length * 2
-    output['parameters']['repeat'] = false
-    output['innerjson'] = Hash.new
+    output['type'] = "array"
+    output['rules'] = Hash.new
+    output['rules']['min'] = 0
+    output['rules']['max'] = input.length * 2
+    output['rules']['repeat'] = false
+    output['properties'] = Hash.new
 
     input.each_with_index do |value, index|
 
-      output['innerjson'][index] = Hash.new
+      output['properties'][index] = Hash.new
 
-      master(value, output['innerjson'][index])
+      master(value, output['properties'][index])
 
     end
 
@@ -37,80 +37,45 @@ class FudoJsonGenerator
 
   def self.hash(input, output)
 
-    output['apitesting::type'] = "hashmap"
-    output['innerjson'] = Hash.new
+    output['type'] = "object"
 
+    output['rules'] = Hash.new
+
+    output['rules']['required'] = true
+
+    output['properties'] = Hash.new
     input.each do |key, value|
-      output['innerjson'][key] = Hash.new
-      master(value, output['innerjson'][key])
+      output['properties'][key] = Hash.new
+      master(value, output['properties'][key])
     end
   end
 
   def self.value(input, output)
-    output['apitesting::type'] = "value"
-    output['innerjson'] = Hash.new
-    output['innerjson']['type'] = "fixed"
-    output['innerjson']['value'] = input
-    output['innerjson']['required'] = true
+    output['type'] = "value"
+    output['rules'] = Hash.new
+    output['rules']['value-type'] = input.class.to_s
+    output['rules']['donotmodify'] = false
+    output['rules']['required'] = true
+    output['rules']['unique'] = false
+
+    output['properties'] = Hash.new
+    output['properties']['source'] = "fixed"
+    output['properties']['value'] = input
+    output['inputs'] = Array.new
   end
 
 end
 
 # shittystring = '[{"status": "new", "name": "alex", "id": 10},{"status": "new", "name": "alex", "id": 11}]'
-#shittystring = '{"status": "new", "name": "alex", "id": {"status": "new", "name": [2,3,4,5]}}'
+# shittystring = '{"status": "new", "name": "alex", "id": {"status": "new", "name": [2,3,4,5]}}'
+shittystring = '{"status": "new", "name": "alex", "id": {"status": "new"}}'
 
 
-# output = JSON.parse("{}")
-# input = JSON.parse(shittystring)
+output = JSON.parse("{}")
+input = JSON.parse(shittystring)
 
 
-# FudoJsonGenerator.master(input, output)
+FudoJsonGenerator.master(input, output)
 
-# puts JSON.pretty_generate(output)
+puts JSON.pretty_generate(output)
 
-
-# INPUT
-
-#[{"status": "new", "name": "alex", "id": 10}]
-
-
-# OUTPUT
-
-# {
-#       "apitesting::type": "array",
-#       "parameters": {
-#         "min": 0,
-#         "max": 4,
-#         "repeat": false
-#       },
-#       "innerjson": {
-#         "0": {
-#           "apitesting::type": "hashmap",
-#           "innerjson": {
-#             "status": {
-#               "apitesting::type": "value",
-#               "innerjson": {
-#                 "type": "class",
-#                 "value": "String",
-#                 "required": "true"
-#               }
-#             },
-#             "name": {
-#               "apitesting::type": "value",
-#               "innerjson": {
-#                 "type": "fixed",
-#                 "value": "John",
-#                 "required": "true"
-#               }
-#             },
-#             "id": {
-#               "apitesting::type": "value",
-#               "innerjson": {
-#                 "type": "class",
-#                 "value": "Fixnum",
-#                 "required": "true"
-#               }
-#             }
-#           }
-#         }
-#       }

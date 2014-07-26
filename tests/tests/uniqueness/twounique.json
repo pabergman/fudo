@@ -31,7 +31,7 @@
       "firstname": {
         "type": "value",
         "donotmodify": false,
-        "restrictions": {
+        "rules": {
           "required": false,
           "unique": true
         }
@@ -39,7 +39,7 @@
       "surname": {
         "type": "value",
         "donotmodify": false,
-        "restrictions": {
+        "rules": {
           "required": false,
           "unique": true
         }
