@@ -121,14 +121,11 @@ class DataFudger
     if(@fudger_spec[key]['type'] == 'value')
       clone = clone_request(key)
       change_type(clone[0], clone[1], key, @fudger_spec[key]['rules'])
-    end
-
-    if(@fudger_spec[key]['type'] == 'value')
       clone = clone_request(key)
       set_unique(clone[0], clone[1], @request_body, key, @fudger_spec[key]['rules'])
     end
 
-    if(@fudger_spec[key]['type'] == 'boolean')
+    if(@fudger_spec[key]['rules']['value-type'] == 'boolean')
       clone = clone_request(key)
       boolean_int(clone[0], clone[1], @request_body, key)
       clone = clone_request(key)
@@ -147,14 +144,11 @@ class DataFudger
     if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'value')
       clone = clone_request(key)
       change_type(clone[0], clone[1][@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
-    end
-
-    if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'value')
       clone = clone_request(key)
       set_unique(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'boolean')
+    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'boolean')
       clone = clone_request(key)
       boolean_int(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key)
       clone = clone_request(key)
@@ -174,14 +168,11 @@ class DataFudger
     if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'value')
       clone = clone_request(key)
       change_type(clone[0], clone[1][@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
-    end
-
-    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'value')
       clone = clone_request(key)
       set_unique(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key, @fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules'])
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['type'] == 'boolean')
+    if(@fudger_spec[@depth[0]]['properties'][@depth[1]]['properties'][key]['rules']['value-type'] == 'boolean')
       clone = clone_request(key)
       boolean_int(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key)
       clone = clone_request(key)
