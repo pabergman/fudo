@@ -103,7 +103,7 @@ class DataFudger
 
   def snowflake_value(value,  i = @fudged_data.size)
     if(value.kind_of?(String))
-      value << "__#{i}"
+      value.insert(0, "#{i}__") 
     elsif(value.kind_of?(Fixnum))
       value += i
     end
@@ -229,6 +229,7 @@ class DataFudger
       m[key] = "true"
       add_to_fudged(y, "#{key} is a should be a boolean!", 400)
     end
+
   end
 
   def set_unique(y, m, original, key, rules)
