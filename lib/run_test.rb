@@ -97,15 +97,5 @@ class RunTest
 
     end
   end
-end
-
-
-if __FILE__ == $0
-
-  commandlineinput = ARGV[0]
-
-  full_request = JSON.parse(open(Fudo::CONFIG['root_dir'] + "/tests/" + Fudo::TEST_ROOT[commandlineinput]).read)
-
-  RunTest.run(full_request)
-
+  
 end
