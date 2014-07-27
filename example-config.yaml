@@ -1,5 +1,6 @@
 root_dir: /path/to/test/directory
-error_body: false
+log_success: false
+validate_errors: false
 force_unhappy: true
 weak_password: helloworld
 short_password: nK!c
