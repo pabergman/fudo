@@ -38,8 +38,6 @@ class RunTest
 
     request.run
 
-    puts JSON::Validator.validate(full_request['response']['body'], request.response.body)
-
   end
 
   def self.with_body(full_request)
@@ -51,8 +49,6 @@ class RunTest
     )
 
     request.run
-
-    puts JSON::Validator.validate(full_request['response']['body'], request.response.body)
 
   end
 
@@ -70,28 +66,10 @@ class RunTest
         headers: value['request']['headers']
       )
       bad_request.on_complete do | response |
-        if (response.code != value['response']['status'])
-          if(value['response']['status'].between?(400, 499) && response.code.between?(400,499))
-            value['response']['severity'] += 1
-          elsif(value['response']['status'].between?(200, 299) && response.code.between?(200,299))
-            value['response']['severity'] += 1
-          end
-          unhappy_outout << {"severity" => value['response']['severity'], "expected" => value['response']['status'],
-                             "received" => response.code, "message" => value['response']['message'], "request" => value['request']}
-        elsif(Fudo::CONFIG['print_success'] == true)
-          unhappy_outout << {"severity" => 100, "expected" => value['response']['status'],
-                             "received" => response.code, "message" => value['response']['message'], "request" => value['request']}
 
-        end
-
-        if(response.code == 200)
-          errors = JSON::Validator.fully_validate(value['response']['body'], response.body)
-          # puts value['response']['message']
-          puts errors
-        elsif(response.code != 500 && Fudo::CONFIG['error_body'] == true)
-
-          puts JSON::Validator.validate(value['response']['error_body'], response.body)
-
+        error_message = logging(response,value)
+        if(error_message['severity'] < 100 || Fudo::CONFIG['log_success'] == true)
+          unhappy_outout << error_message
         end
       end
 
@@ -112,6 +90,43 @@ class RunTest
       puts "| #{value['message']}"
 
     end
+  end
+
+  def self.logging(response, value)
+
+
+    error_message = {}
+
+    if (response.code != value['response']['status'])
+      if(value['response']['status'].between?(400, 499) && response.code.between?(400,499))
+        value['response']['severity'] += 2
+      elsif(value['response']['status'].between?(200, 299) && response.code.between?(200,299))
+        value['response']['severity'] += 1
+      end
+      error_message = {"severity" => value['response']['severity'], "expected" => value['response']['status'],
+                       "received" => response.code, "message" => value['response']['message'], "request" => value['request']}
+    else
+      error_message = {"severity" => 100, "expected" => value['response']['status'],
+                       "received" => response.code, "message" => value['response']['message'], "request" => value['request']}
+    end
+
+    if(response.code == 200)
+      errors = JSON::Validator.fully_validate(value['response']['body'], response.body)
+      if(errors.size > 0)
+        error_message['validation_errors'] = errors
+        error_message['response_body'] = response.body
+        error_message['severity'] = 1;
+      end
+    end
+
+    if(response.code.between?(400,499) && Fudo::CONFIG['validate_errors'] == true)
+      errors = JSON::Validator.fully_validate(value['response']['error_body'], response.body)
+      error_message['validation_errors'] = errors
+      error_message['response_body'] = response.body
+    end
+
+    error_message
+
   end
 
 end
