@@ -262,12 +262,12 @@ class DataFudger
   end
 
   def short_password(y, m, key)
-    m[key] = "nK!c"
+    m[key] = Fudo::CONFIG['short_password']
     add_to_fudged(y, "The password for key #{key} was set to nK!c and is too short.", 400, 1)
   end
 
   def weak_password(y, m, key)
-    m[key] = "helloworld"
+    m[key] = Fudo::CONFIG['weak_password']
     add_to_fudged(y, "The password for key #{key} was set to helloworld and is considered weak.", 400, 1)
   end
 
@@ -277,7 +277,7 @@ class DataFudger
   end
 
   def correct_email(y, m, key)
-    m[key] = m[key].sub ".", ""
+    m[key] = m[key].sub "\.", ""
     add_to_fudged(y, "The email for key #{key} is an valid email.", 200, 2)
   end
 
