@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'json'
 
-
 class FudoJsonGenerator
 
   def self.master(input, output)
@@ -82,17 +81,13 @@ if __FILE__ == $0
     request_body = JSON.parse("{}")
   end
 
-  puts "Response body JSON please."
-  response_body = JSON.parse(gets.chomp)
-
 
   fudo_request = {"request" => {"method" => method, "url" => url, "headers" => {}, "body" => request_body},
-                  "response" => {"body" => response_body, "headers" => {}, "status" => 200, "message" => "should pass"}}
+                  "response" => {"body" => "replace me with json-schema please!", "headers" => {}, "status" => 200, "message" => "should pass"}}
 
   # shittystring = '[{"status": "new", "name": "alex", "id": 10},{"status": "new", "name": "alex", "id": 11}]'
   # shittystring = '{"status": "new", "name": "alex", "id": {"status": "new", "name": [2,3,4,5]}}'
-  # shittystring = '{"status": "new", "name": "alex", "id": {"status": "new"}}'
+  # shittystring = '{"": "new", "name": "alex", "id": {"status": "new"}}'
 
-  puts JSON.pretty_generate(fudo_request)
 
 end

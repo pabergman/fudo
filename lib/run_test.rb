@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'json'
 require 'typhoeus'
+require 'json-schema'
 require_relative 'data_generator'
 require_relative 'data_fudger'
 
@@ -22,7 +23,6 @@ class RunTest
     request = Typhoeus::Request.new(
       full_request['request']['url'],
       method: full_request['request']['method'],
-      verbose: false,
       headers: full_request['request']['headers']
     )
 
@@ -35,7 +35,6 @@ class RunTest
       full_request['request']['url'],
       method: full_request['request']['method'],
       body: full_request['request']['body'].to_json,
-      verbose: false,
       headers: full_request['request']['headers']
     )
 
@@ -97,5 +96,5 @@ class RunTest
 
     end
   end
-  
+
 end

@@ -1,6 +1,8 @@
+ #!/usr/bin/env ruby
 require 'yaml'
 require 'json'
 require_relative 'run_test'
+require_relative 'parser'
 
 class Fudo
 
