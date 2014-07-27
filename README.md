@@ -28,6 +28,7 @@ Make sure you have the following installed:
 
 Now pull the git repo:
 git clone https://github.com/pabergman/fudo.git ~/fudo
+Run "bundle install" in the git directory
 
 Create a test directory, feel free to copy the one in the repo.
 It needs to to contain both the test-directory.json and global-variables.json file and a subdirectory called tests.
