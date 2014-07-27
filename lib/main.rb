@@ -9,9 +9,9 @@ require_relative 'fudo'
 
 class RunTest
 
-  def self.run_(full_request)
+  def self.run(full_request)
     if(full_request['request']['method'] == "GET" || full_request['request']['method'] == "GET")
-      no_body(full_request)
+      request = no_body(full_request)
     else
       with_body(full_request)
       fudged_data = create_unhappy(full_request)
@@ -108,6 +108,6 @@ if __FILE__ == $0
 
   full_request = JSON.parse(open(Fudo::CONFIG['root_dir'] + "/tests/" + Fudo::TEST_ROOT[commandlineinput]).read)
 
-  RunTest.run_(full_request)
+  RunTest.run(full_request)
 
 end
