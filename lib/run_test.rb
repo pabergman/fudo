@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
 require 'json'
 require 'typhoeus'
-require_relative 'response_checker'
 require_relative 'data_generator'
 require_relative 'data_fudger'
-require_relative 'fudo'
 
 
 class RunTest
