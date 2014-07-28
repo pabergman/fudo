@@ -125,21 +125,18 @@ class DataFudger
       set_unique(clone[0], clone[1], @request_body, key, local_fudger['rules'])
     end
 
-    if(local_fudger['rules']['value-type'] == 'String')
+    case local_fudger['rules']['value-type']
+    when 'String'
       clone = clone_request(key)
       string_int(clone[0], clone[1], key)
       clone = clone_request(key)
       string_boolean(clone[0], clone[1], key)
-    end
-
-    if(local_fudger['rules']['value-type'] == 'Fixnum')
+    when 'Fixnum'
       clone = clone_request(key)
       int_string(clone[0], clone[1], key)
       clone = clone_request(key)
       int_boolean(clone[0], clone[1], key)
-    end
-
-    if(local_fudger['rules']['value-type'] == 'boolean')
+    when 'boolean'
       clone = clone_request(key)
       boolean_int(clone[0], clone[1], key)
       clone = clone_request(key)
@@ -179,21 +176,18 @@ class DataFudger
       set_unique(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key, local_fudger['rules'])
     end
 
-    if(local_fudger['rules']['value-type'] == 'String')
+    case local_fudger['rules']['value-type']
+    when 'String'
       clone = clone_request(key)
       string_int(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       string_boolean(clone[0], clone[1][@depth[0]], key)
-    end
-
-    if(local_fudger['rules']['value-type'] == 'Fixnum')
+    when 'Fixnum'
       clone = clone_request(key)
       int_string(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       int_boolean(clone[0], clone[1][@depth[0]], key)
-    end
-
-    if(local_fudger['rules']['value-type'] == 'boolean')
+    when 'boolean'
       clone = clone_request(key)
       boolean_int(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
@@ -233,21 +227,18 @@ class DataFudger
       set_unique(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key, local_fudger['rules'])
     end
 
-    if(local_fudger['rules']['value-type'] == 'String')
+    case local_fudger['rules']['value-type']
+    when 'String'
       clone = clone_request(key)
       string_int(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
       string_boolean(clone[0], clone[1][@depth[0]][@depth[1]], key)
-    end
-
-    if(local_fudger['rules']['value-type'] == 'Fixnum')
+    when 'Fixnum'
       clone = clone_request(key)
       int_string(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
       int_boolean(clone[0], clone[1][@depth[0]][@depth[1]], key)
-    end
-
-    if(local_fudger['rules']['value-type'] == 'boolean')
+    when 'boolean'
       clone = clone_request(key)
       boolean_int(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
