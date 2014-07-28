@@ -24,7 +24,7 @@ class RunTest
     else
       data_fudger = DataFudger.new(full_request)
       data_fudger.run
-
+      
       response = with_body(full_request)
       message = logging(response, full_request)
       return_array << message
@@ -35,7 +35,7 @@ class RunTest
       return_array.concat(run_unhappy(data_fudger.fudged_data))
     end
 
-    puts return_array.to_json
+   puts return_array.to_json
 
     puts "Severity | Expected | Received | Message"
 
@@ -112,9 +112,13 @@ class RunTest
       end
 
       error_message = {"severity" => value['response']['severity'] }
+
     else
       error_message = {"severity" => 100}
     end
+
+
+    error_message['response_body'] = JSON.parse(response.body)
     error_message['expected'] = value['response']['status']
     error_message['received'] = response.code
     error_message['message'] = value['response']['message']
@@ -125,7 +129,6 @@ class RunTest
       errors = JSON::Validator.fully_validate(value['response']['body'], response.body)
       if(errors.size > 0)
         error_message['validation_errors'] = errors
-        error_message['response_body'] = response.body
         error_message['severity'] = 1;
       end
     end
@@ -133,7 +136,6 @@ class RunTest
     if(response.code.between?(400,499) && Fudo::CONFIG['validate_errors'] == true)
       errors = JSON::Validator.fully_validate(value['response']['error_body'], response.body)
       error_message['validation_errors'] = errors
-      error_message['response_body'] = response.body
     end
 
     error_message
