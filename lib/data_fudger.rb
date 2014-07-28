@@ -151,36 +151,39 @@ class DataFudger
   end
 
   def depth_1(key)
-    clone = clone_request(key)
-    delete(clone[0], clone[1][@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+
+    local_fudger = @fudger_spec[@depth[0]]['properties'][key]
 
     clone = clone_request(key)
-    set_nil(clone[0], clone[1][@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+    delete(clone[0], clone[1][@depth[0]], key, local_fudger['rules'])
 
-    if(@fudger_spec[@depth[0]]['properties'][key]['type'] == 'value')
+    clone = clone_request(key)
+    set_nil(clone[0], clone[1][@depth[0]], key, local_fudger['rules'])
+
+    if(local_fudger['type'] == 'value')
       clone = clone_request(key)
-      change_type(clone[0], clone[1][@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+      change_type(clone[0], clone[1][@depth[0]], key, local_fudger['rules'])
       clone = clone_request(key)
-      set_unique(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key, @fudger_spec[@depth[0]]['properties'][key]['rules'])
+      set_unique(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key, local_fudger['rules'])
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'boolean')
+    if(local_fudger['rules']['value-type'] == 'boolean')
       clone = clone_request(key)
       boolean_int(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       boolean_string(clone[0], clone[1][@depth[0]], key)
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'password' &&
-       @fudger_spec[@depth[0]]['properties'][key]['rules']['donotmodify'] == false)
+    if(local_fudger['rules']['value-type'] == 'password' &&
+       local_fudger['rules']['donotmodify'] == false)
       clone = clone_request(key)
       short_password(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       weak_password(clone[0], clone[1][@depth[0]], key)
     end
 
-    if(@fudger_spec[@depth[0]]['properties'][key]['rules']['value-type'] == 'email' &&
-       @fudger_spec[@depth[0]]['properties'][key]['rules']['donotmodify'] == false)
+    if(local_fudger['rules']['value-type'] == 'email' &&
+       local_fudger['rules']['donotmodify'] == false)
       clone = clone_request(key)
       incorrect_email(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
