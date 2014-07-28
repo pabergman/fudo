@@ -125,19 +125,17 @@ class DataFudger
       set_unique(clone[0], clone[1], @request_body, key, local_fudger['rules'])
     end
 
-    case clone[1].class
-    when String
-      clone = clone_request(key)
+    clone = clone_request(key)
+    case clone[1][key].class
+    when String.class
       string_int(clone[0], clone[1], key)
       clone = clone_request(key)
       string_boolean(clone[0], clone[1], key)
-    when Fixnum
-      clone = clone_request(key)
+    when Fixnum.class
       int_string(clone[0], clone[1], key)
       clone = clone_request(key)
       int_boolean(clone[0], clone[1], key)
-    when TrueClass || FalseClass
-      clone = clone_request(key)
+    when TrueClass.class || FalseClass.class
       boolean_int(clone[0], clone[1], key)
       clone = clone_request(key)
       boolean_string(clone[0], clone[1], key)
@@ -176,19 +174,17 @@ class DataFudger
       set_unique(clone[0], clone[1][@depth[0]], @request_body[@depth[0]], key, local_fudger['rules'])
     end
 
-    case clone[1][@depth[0]].class
-    when String
-      clone = clone_request(key)
+    clone = clone_request(key)
+    case clone[1][@depth[0]][key].class
+    when String.class
       string_int(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       string_boolean(clone[0], clone[1][@depth[0]], key)
-    when Fixnum
-      clone = clone_request(key)
+    when Fixnum.class
       int_string(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       int_boolean(clone[0], clone[1][@depth[0]], key)
-    when TrueClass || FalseClass
-      clone = clone_request(key)
+    when TrueClass.class || FalseClass.class
       boolean_int(clone[0], clone[1][@depth[0]], key)
       clone = clone_request(key)
       boolean_string(clone[0], clone[1][@depth[0]], key)
@@ -227,19 +223,17 @@ class DataFudger
       set_unique(clone[0], clone[1][@depth[0]][@depth[1]], @request_body[@depth[0]][@depth[1]], key, local_fudger['rules'])
     end
 
-    case clone[1][@depth[0]][@depth[1]].class
-    when String
-      clone = clone_request(key)
+    clone = clone_request(key)
+    case clone[1][@depth[0]][@depth[1]][key].class
+    when String.class
       string_int(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
       string_boolean(clone[0], clone[1][@depth[0]][@depth[1]], key)
-    when Fixnum
-      clone = clone_request(key)
+    when Fixnum.class
       int_string(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
       int_boolean(clone[0], clone[1][@depth[0]][@depth[1]], key)
-    when TrueClass || FalseClass
-      clone = clone_request(key)
+    when TrueClass.class || FalseClass.class
       boolean_int(clone[0], clone[1][@depth[0]][@depth[1]], key)
       clone = clone_request(key)
       boolean_string(clone[0], clone[1][@depth[0]][@depth[1]], key)
