@@ -18,8 +18,10 @@ class RunTest
 
     if(full_request['request']['method'] == "GET" || full_request['request']['method'] == "DELETE")
       request = no_body(full_request)
+      response = with_body(full_request)
+      message = logging(response, full_request)
+      return_array << message
     else
-
       data_fudger = DataFudger.new(full_request)
       data_fudger.run
 
@@ -62,6 +64,7 @@ class RunTest
   end
 
   def self.with_body(full_request)
+    full_request['response']['severity'] = 1
     request = Typhoeus::Request.new(
       full_request['request']['url'],
       method: full_request['request']['method'],
@@ -107,6 +110,7 @@ class RunTest
       elsif(value['response']['status'].between?(200, 299) && response.code.between?(200,299))
         value['response']['severity'] += 1
       end
+
       error_message = {"severity" => value['response']['severity'] }
     else
       error_message = {"severity" => 100}
