@@ -112,6 +112,8 @@ class DataFudger
 
   def depth_0(key)
 
+    local_fudger = @fudger_spec[key]
+
     clone = clone_request(key)
     delete(clone[0], clone[1], key, @fudger_spec[key]['rules'])
 
@@ -246,6 +248,26 @@ class DataFudger
     fudged_request['response']['status'] = status
     fudged_request['response']['severity'] = severity
     @fudged_data << fudged_request
+  end
+
+  def int_boolean(y, m, key)
+    m[key] = false
+    add_to_fudged(y, "Replaced #{key} with an boolean instead of integer.", 400, 1)
+  end
+
+  def int_string(y, m, key)
+    m[key] = "sillystring"
+    add_to_fudged(y, "Replaced #{key} with an string instead of integer.", 400, 1)
+  end
+
+  def string_boolean(y, m, key)
+    m[key] = true
+    add_to_fudged(y, "Replaced #{key} with an boolean instead of string.", 400, 1)
+  end
+
+  def string_int(y, m, key)
+    m[key] = (100+i)
+    add_to_fudged(y, "Replaced #{key} with an integer instead of string.", 400, 1)
   end
 
   def boolean_int(y, m, key)
