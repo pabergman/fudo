@@ -273,22 +273,22 @@ class DataFudger
 
   def int_boolean(y, m, key)
     m[key] = false
-    add_to_fudged(y, "Replaced #{key} with an boolean instead of integer.", 400, 1)
+    add_to_fudged(y, "Replaced #{@depth}-#{key} with an boolean instead of integer.", 400, 1)
   end
 
   def int_string(y, m, key)
     m[key] = "sillystring"
-    add_to_fudged(y, "Replaced #{key} with an string instead of integer.", 400, 1)
+    add_to_fudged(y, "Replaced #{@depth}-#{key} with an string instead of integer.", 400, 1)
   end
 
   def string_boolean(y, m, key)
     m[key] = true
-    add_to_fudged(y, "Replaced #{key} with an boolean instead of string.", 400, 1)
+    add_to_fudged(y, "Replaced #{@depth}-#{key} with an boolean instead of string.", 400, 1)
   end
 
   def string_int(y, m, key)
     m[key] = 10000
-    add_to_fudged(y, "Replaced #{key} with an integer instead of string.", 400, 1)
+    add_to_fudged(y, "Replaced #{@depth}-#{key} with an integer instead of string.", 400, 1)
   end
 
   def boolean_int(y, m, key)
@@ -297,7 +297,7 @@ class DataFudger
     else
       m[key] = 0
     end
-    add_to_fudged(y, "The key #{key} switched from boolean to an equivalent smallint.", 400, 2)
+    add_to_fudged(y, "The key #{@depth}-#{key} switched from boolean to an equivalent smallint.", 400, 2)
   end
 
   def boolean_string(y, m, key)
@@ -306,57 +306,57 @@ class DataFudger
     else
       m[key] = "false"
     end
-    add_to_fudged(y, "The key #{key} switched from boolean to an equivalent string.", 400, 2)
+    add_to_fudged(y, "The key #{@depth}-#{key} switched from boolean to an equivalent string.", 400, 2)
   end
 
   def short_password(y, m, key)
     m[key] = Fudo::CONFIG['short_password']
-    add_to_fudged(y, "The password for key #{key} was set to nK!c and is too short.", 400, 1)
+    add_to_fudged(y, "The password for key #{@depth}-#{key} was set to nK!c and is too short.", 400, 1)
   end
 
   def weak_password(y, m, key)
     m[key] = Fudo::CONFIG['weak_password']
-    add_to_fudged(y, "The password for key #{key} was set to helloworld and is considered weak.", 400, 1)
+    add_to_fudged(y, "The password for key #{@depth}-#{key} was set to helloworld and is considered weak.", 400, 1)
   end
 
   def incorrect_email(y, m, key)
     m[key] = m[key].sub "@", ""
-    add_to_fudged(y, "The email for key #{key} is not an valid email.", 400, 1)
+    add_to_fudged(y, "The email for key #{@depth}-#{key} is not an valid email.", 400, 1)
   end
 
   def correct_email(y, m, key)
     m[key] = m[key].sub "\.", ""
-    add_to_fudged(y, "The email for key #{key} is an valid email.", 200, 2)
+    add_to_fudged(y, "The email for key #{@depth}-#{key} is an valid email.", 200, 2)
   end
 
   def delete(y, m, key, rules)
     m.delete(key)
     if(rules['required'])
-      add_to_fudged(y, "The key #{key} was removed from the JSON object.", 400, 1)
+      add_to_fudged(y, "The key #{@depth}-#{key} was removed from the JSON object.", 400, 1)
     else
-      add_to_fudged(y, "The key #{key} was removed from the JSON object.", 200, 2)
+      add_to_fudged(y, "The key #{@depth}-#{key} was removed from the JSON object.", 200, 2)
     end
   end
 
   def set_nil(y, m, key, rules)
     m[key] = nil
     if(rules['required'])
-      add_to_fudged(y, "The value for #{key} was set to null.", 400, 1)
+      add_to_fudged(y, "The value for #{@depth}-#{key} was set to null.", 400, 1)
     else
-      add_to_fudged(y, "The value for #{key} was set to null.", 200, 2)
+      add_to_fudged(y, "The value for #{@depth}-#{key} was set to null.", 200, 2)
     end
   end
 
   def change_type(y, m, key, rules)
     if(rules['value-type'] == "String")
       m[key] = false
-      add_to_fudged(y, "Replaced #{key} with an boolean instead of string.", 400, 2)
+      add_to_fudged(y, "Replaced #{@depth}-#{key} with an boolean instead of string.", 400, 2)
     elsif(rules['value-type'] == "Fixnum")
       m[key] = "wrongvalue"
-      add_to_fudged(y, "Replaced #{key} with a string instead of integer.", 400, 1)
+      add_to_fudged(y, "Replaced #{@depth}-#{key} with a string instead of integer.", 400, 1)
     elsif(rules['value-type'] == "boolean")
       m[key] = "wrongvalue"
-      add_to_fudged(y, "Replaced #{key} with a string instead of boolean.", 400, 1)
+      add_to_fudged(y, "Replaced #{@depth}-#{key} with a string instead of boolean.", 400, 1)
     end
 
   end
@@ -364,9 +364,9 @@ class DataFudger
   def set_unique(y, m, original, key, rules)
     m[key] = original[key]
     if(rules['unique'])
-      add_to_fudged(y, "Tried to make two requests with the same #{key}, should need to be unique.",  409, 1)
+      add_to_fudged(y, "Tried to make two requests with the same #{@depth}-#{key}, should need to be unique.",  409, 1)
     else
-      add_to_fudged(y, "Tried to make two requests with the same #{key}, should not need to be unique!", 200, 1)
+      add_to_fudged(y, "Tried to make two requests with the same #{@depth}-#{key}, should not need to be unique!", 200, 1)
     end
   end
 
