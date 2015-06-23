@@ -7,6 +7,7 @@ module Fudo
       @input = input
       @output = {}
       construct_schema(@input, @output)
+      output['$schema'] = 'http://json-schema.org/draft-04/schema#'
     end
 
     def construct_schema(input, output)
@@ -19,7 +20,6 @@ module Fudo
         value(input, output)
       end
 
-      output['$schema'] = 'http://json-schema.org/draft-04/schema#'
     end
 
     def array(input, output)
@@ -27,25 +27,35 @@ module Fudo
       output['uniqueItems'] = false
       output['additionalItems'] = true
       output['minItems'] = input.size.zero? && 0 || 1
-      output['items'] = []
+      output['items'] = Array.new
+
+      input.each_with_index do |value, index|
+        output['items'][index] = Hash.new
+        construct_schema(value, output['items'][index])
+      end
     end
 
     def object(input, output)
       output['type'] = 'object'
       output['additionalProperties'] = false
-      output['properties'] = {}
+      output['properties'] = Hash.new
+      output['required'] = Array.new
+
+      input.each do |key, value|
+        output['properties'][key] = Hash.new
+        construct_schema(value, output['properties'][key])
+        output['required'] << key
+      end
     end
 
     def value(input, output)
-
+      puts input
+      output['type'] = self.class.value_type(input)
+      output['default'] = input
     end
 
-    def self.schema_type(value)
+    def self.value_type(value)
       case value
-      when Hash
-        return "object"
-      when Array
-        return "array"
       when String
         return "string"
       when Fixnum

@@ -21,13 +21,29 @@ class SchemaGeneratorTest < Minitest::Test
   end
 
   def test_schema_type_identifier
-    assert_equal 'object', Fudo::SchemaGenerator.schema_type({})
-    assert_equal 'array', Fudo::SchemaGenerator.schema_type([])
-    assert_equal 'string', Fudo::SchemaGenerator.schema_type('hello world')
-    assert_equal 'number', Fudo::SchemaGenerator.schema_type(20)
-    assert_equal 'boolean', Fudo::SchemaGenerator.schema_type(true)
-    assert_equal 'boolean', Fudo::SchemaGenerator.schema_type(false)
-    assert_equal 'null', Fudo::SchemaGenerator.schema_type(nil)
+    assert_equal 'string', Fudo::SchemaGenerator.value_type('hello world')
+    assert_equal 'number', Fudo::SchemaGenerator.value_type(20)
+    assert_equal 'boolean', Fudo::SchemaGenerator.value_type(true)
+    assert_equal 'boolean', Fudo::SchemaGenerator.value_type(false)
+    assert_equal 'null', Fudo::SchemaGenerator.value_type(nil)
+  end
+
+  def test_single_value_hash
+    input = {'name' => 'alexander'}
+    schema = Fudo::SchemaGenerator.new(input).output
+    assert_equal 1, schema['properties'].size
+    assert_equal 'alexander', schema['properties']['name']['default']
+    assert_equal 1, schema['required'].size
+    assert_equal 'name', schema['required'][0]
+  end
+
+  def test_single_value_array
+    input = ['hello']
+    schema = Fudo::SchemaGenerator.new(input).output
+    assert_equal 1, schema['minItems']
+    assert_equal 1, schema['items'].size
+    assert_equal 'string', schema['items'][0]['type']
+    assert_equal 'hello', schema['items'][0]['default']
   end
 
 end
