@@ -6,12 +6,18 @@ class SchemaGeneratorTest < Minitest::Test
     schema = Fudo::SchemaGenerator.new({}).output
     assert_equal 'http://json-schema.org/draft-04/schema#', schema['$schema']
     assert_equal 'object', schema['type']
+    assert_equal false, schema['additionalProperties']
+    assert_equal true, schema['properties'].empty?
   end
 
   def test_empty_array
-   schema = Fudo::SchemaGenerator.new([]).output
-   assert_equal 'http://json-schema.org/draft-04/schema#', schema['$schema']
-   assert_equal 'array', schema['type']
+    schema = Fudo::SchemaGenerator.new([]).output
+    assert_equal 'http://json-schema.org/draft-04/schema#', schema['$schema']
+    assert_equal 'array', schema['type']
+    assert_equal false, schema['uniqueItems']
+    assert_equal true, schema['additionalItems']
+    assert_equal 0, schema['minItems']
+    assert_equal true, schema['items'].empty?
   end
 
   def test_schema_type_identifier
@@ -25,4 +31,3 @@ class SchemaGeneratorTest < Minitest::Test
   end
 
 end
-

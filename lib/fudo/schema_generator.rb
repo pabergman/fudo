@@ -24,10 +24,16 @@ module Fudo
 
     def array(input, output)
       output['type'] = 'array'
+      output['uniqueItems'] = false
+      output['additionalItems'] = true
+      output['minItems'] = input.size.zero? && 0 || 1
+      output['items'] = []
     end
 
     def object(input, output)
       output['type'] = 'object'
+      output['additionalProperties'] = false
+      output['properties'] = {}
     end
 
     def value(input, output)
