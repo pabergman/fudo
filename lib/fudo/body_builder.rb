@@ -18,7 +18,7 @@ module Fudo
       case type
       when 'object' then @result = handle_object(result)
       when 'array' then @result = handle_array(result)
-      else raise TypeError, 'Unknown type'
+      else raise TypeError, "Uknown type: #{type}"
       end
     end
 
@@ -29,27 +29,29 @@ module Fudo
         when 'value' then result['properties'][key] = set_value(value)
         when 'object' then result['properties'][key] = handle_object(value)
         when 'array' then result['properties'][key] = handle_array(value)
-        else raise TypeError, 'Unknown type'
+        else raise TypeError, "Uknown type: #{type}"
         end
       end
     end
 
     def set_value(result)
+      fudo = result['fudo']
+      inputs = fudo['inputs']
       case result['fudo']['source']
-      when 'ffaker' then value = fake_value(result['value'],result['inputs'])
+      when 'ffaker' then value = ffaker(result['fudo'])
       when 'default' then value = result['default']
-      when 'global' then value = Fudo::GLOBAL_VARIABLES.access(properties['value'])
+      when 'global' then #TODO
       when 'runtest' then #add support later
       when 'previoustest' then #do stuff
       when 'custom' then #dostuff
-      when 'environmental' then #dostuff
-      else puts "#{result['source']} is not supported."
+      when 'eval' then value = eval(fudo['eval'])
+      else raise TypeError, "#{fudo['source']} is not supported."
       end
       value
     end
 
-    def fake_value(value, inputs)
-      "Faker::#{value['class']}".constantize.send(value['method'], *inputs)
+    def ffaker(fudo)
+      "Faker::#{fudo['class']}".constantize.send(fudo['method'], *fudo['inputs'])
     end
 
     def handle_array(result)
