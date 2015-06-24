@@ -49,7 +49,8 @@ module Fudo
     end
 
     def value(input, output)
-      output['type'] = self.class.value_type(input)
+      output['anyOf'] = Array.new
+      output['anyOf'] << { 'type' => self.class.value_type(input) }
       output['default'] = input
     end
 

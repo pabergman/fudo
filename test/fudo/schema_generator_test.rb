@@ -50,8 +50,58 @@ class SchemaGeneratorTest < Minitest::Test
     schema = schema.output
     assert_equal 1, schema['minItems']
     assert_equal 1, schema['items'].size
-    assert_equal 'string', schema['items'][0]['type']
+    assert_equal 1, schema['items'][0]['anyOf'].size
     assert_equal 'hello', schema['items'][0]['default']
+  end
+
+  def test_string_value
+    output = Hash.new
+    schema = Fudo::SchemaGenerator.new({})
+    schema.value('alexander', output)
+    assert_equal 2, output.size
+    assert_equal 1, output['anyOf'].size
+    assert_equal 'string', output['anyOf'][0]['type']
+    assert_equal 'alexander', output['default']
+  end
+
+  def test_number_value
+    output = Hash.new
+    schema = Fudo::SchemaGenerator.new({})
+    schema.value(100, output)
+    assert_equal 2, output.size
+    assert_equal 1, output['anyOf'].size
+    assert_equal 'number', output['anyOf'][0]['type']
+    assert_equal 100, output['default']
+  end
+
+  def test_true_value
+    output = Hash.new
+    schema = Fudo::SchemaGenerator.new({})
+    schema.value(true, output)
+    assert_equal 2, output.size
+    assert_equal 1, output['anyOf'].size
+    assert_equal 'boolean', output['anyOf'][0]['type']
+    assert_equal true, output['default']
+  end
+
+  def test_false_value
+    output = Hash.new
+    schema = Fudo::SchemaGenerator.new({})
+    schema.value(false, output)
+    assert_equal 2, output.size
+    assert_equal 1, output['anyOf'].size
+    assert_equal 'boolean', output['anyOf'][0]['type']
+    assert_equal false, output['default']
+  end
+
+  def test_null_value
+    output = Hash.new
+    schema = Fudo::SchemaGenerator.new({})
+    schema.value(nil, output)
+    assert_equal 2, output.size
+    assert_equal 1, output['anyOf'].size
+    assert_equal 'null', output['anyOf'][0]['type']
+    assert_equal nil, output['default']
   end
 
 end
