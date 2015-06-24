@@ -146,10 +146,11 @@ class SchemaGeneratorTest < Minitest::Test
     assert_equal 1, schema['items'][1]['anyOf'].size
     assert_equal 101, schema['items'][1]['default']
 
-    assert_equal 6, schema['items'][0]['fudo'].size
+    assert_equal 7, schema['items'][0]['fudo'].size
     assert_equal 'default', schema['items'][0]['fudo']['source']
     assert_equal '', schema['items'][0]['fudo']['class']
     assert_equal '', schema['items'][0]['fudo']['method']
+    assert_equal 'value', schema['items'][0]['fudo']['type']
     assert_equal false, schema['items'][0]['fudo']['unique']
     assert_equal false, schema['items'][0]['fudo']['donotmodify']
     assert_equal Array, schema['items'][0]['fudo']['inputs'].class

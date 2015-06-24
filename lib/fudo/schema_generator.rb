@@ -101,7 +101,8 @@ module Fudo
           'method' => '',
           'unique' => false,
           'donotmodify' => false,
-          'inputs' => []
+          'inputs' => [],
+          'type' => 'value'
         }
         output['fudo'] = hash
       end

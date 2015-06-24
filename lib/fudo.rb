@@ -1,4 +1,5 @@
 require_relative 'fudo/schema_generator'
+require_relative 'fudo/body_builder'
 
 module Fudo
 
