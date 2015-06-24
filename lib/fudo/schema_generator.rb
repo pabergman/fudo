@@ -2,6 +2,7 @@ module Fudo
   class SchemaGenerator
 
     attr_reader :output
+    attr_accessor :array_single_schema
 
 
     def initialize(input)
@@ -22,21 +23,36 @@ module Fudo
 
     end
 
+    def array_schema(input, output)
+      case input
+      when Hash
+        object(input, output)
+      when Array
+        array(input, output)
+      else
+        array_single_schema(input, output)
+      end
+
+    end
+
     def array(input, output)
       output['type'] = 'array'
       output['uniqueItems'] = false
       output['additionalItems'] = true
       output['minItems'] = input.size.zero? && 0 || 1
-      output['items'] = Array.new
 
-      input.each_with_index do |value, index|
-        hash = Hash.new
-        if input.size == 1
-          output['items'] = hash
-        else
-          output['items'][index] = hash
+      if @array_single_schema || input.size == 1
+        output['items'] = Hash.new
+        output['items']['anyOf'] = Array.new
+        input.each_with_index do |value, index|
+          array_schema(value, output['items']['anyOf'])
         end
-        construct_schema(value, hash)
+      else
+        output['items'] = Array.new
+        input.each_with_index do |value, index|
+          output['items'][index] = Hash.new
+          construct_schema(value, output['items'][index])
+        end
       end
     end
 
@@ -51,6 +67,10 @@ module Fudo
         construct_schema(value, output['properties'][key])
         output['required'] << key
       end
+    end
+
+    def array_single_schema(input, output)
+      output << { 'type' => self.class.value_type(input) }
     end
 
     def value(input, output)

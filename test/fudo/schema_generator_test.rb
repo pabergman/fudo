@@ -51,10 +51,9 @@ class SchemaGeneratorTest < Minitest::Test
     assert_equal 1, schema['minItems']
     assert_equal Hash, schema['items'].class
     assert_equal 1, schema['items']['anyOf'].size
-    assert_equal 'hello', schema['items']['default']
   end
 
-  def test_two_value_array
+  def test_two_value_array_schema_array
     input = ['hello', 100]
     schema = Fudo::SchemaGenerator.new(input)
     schema.construct_schema
@@ -65,6 +64,20 @@ class SchemaGeneratorTest < Minitest::Test
     assert_equal 1, schema['items'][0]['anyOf'].size
     assert_equal 'hello', schema['items'][0]['default']
     assert_equal 100, schema['items'][1]['default']
+  end
+
+  def test_two_value_array_single_schema
+    input = ['hello', 100]
+    schema = Fudo::SchemaGenerator.new(input)
+    schema.array_single_schema = true
+    schema.construct_schema
+    schema = schema.output
+    assert_equal 1, schema['minItems']
+    assert_equal 1, schema['items'].size
+    assert_equal Hash, schema['items'].class
+    assert_equal 2, schema['items']['anyOf'].size
+    assert_equal 'string', schema['items']['anyOf'][0]['type']
+    assert_equal 'number', schema['items']['anyOf'][1]['type']
   end
 
   def test_string_value
