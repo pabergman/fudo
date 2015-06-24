@@ -2,13 +2,30 @@ module Fudo
   class SchemaGenerator
 
     attr_reader :output
-    attr_accessor :array_single_schema
-
+    attr_accessor :array_single_schema, :fudo_test_schema
 
     def initialize(input)
       @input = input
       @output = {}
       output['$schema'] = 'http://json-schema.org/draft-04/schema#'
+    end
+
+    def array_single_schema=(boolean)
+      if boolean
+        @array_single_schema = true
+        @fudo_test_schema = false
+      else
+        @array_single_schema = false
+      end
+    end
+
+    def fudo_test_schema=(boolean)
+      if boolean
+        @fudo_test_schema = true
+        @array_single_schema = false
+      else
+        @fudo_test_schema = false
+      end
     end
 
     def construct_schema(input = @input, output = @output)
@@ -41,7 +58,7 @@ module Fudo
       output['additionalItems'] = true
       output['minItems'] = input.size.zero? && 0 || 1
 
-      if @array_single_schema || input.size == 1
+      if @array_single_schema || input.size == 1 && !@fudo_test_schema
         output['items'] = Hash.new
         output['items']['anyOf'] = Array.new
         input.each_with_index do |value, index|
@@ -77,6 +94,17 @@ module Fudo
       output['anyOf'] = Array.new
       output['anyOf'] << { 'type' => self.class.value_type(input) }
       output['default'] = input
+      if @fudo_test_schema
+        hash = {
+          'source' => 'default',
+          'class' => '',
+          'method' => '',
+          'unique' => false,
+          'donotmodify' => false,
+          'inputs' => []
+        }
+        output['fudo'] = hash
+      end
     end
 
     def self.value_type(value)
