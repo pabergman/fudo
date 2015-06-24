@@ -30,8 +30,13 @@ module Fudo
       output['items'] = Array.new
 
       input.each_with_index do |value, index|
-        output['items'][index] = Hash.new
-        construct_schema(value, output['items'][index])
+        hash = Hash.new
+        if input.size == 1
+          output['items'] = hash
+        else
+          output['items'][index] = hash
+        end
+        construct_schema(value, hash)
       end
     end
 
