@@ -3,7 +3,9 @@ require_relative '../test_helper'
 class SchemaGeneratorTest < Minitest::Test
 
   def test_empty_object
-    schema = Fudo::SchemaGenerator.new({}).output
+    schema = Fudo::SchemaGenerator.new({})
+    schema.construct_schema
+    schema = schema.output
     assert_equal 'http://json-schema.org/draft-04/schema#', schema['$schema']
     assert_equal 'object', schema['type']
     assert_equal false, schema['additionalProperties']
@@ -11,7 +13,9 @@ class SchemaGeneratorTest < Minitest::Test
   end
 
   def test_empty_array
-    schema = Fudo::SchemaGenerator.new([]).output
+    schema = Fudo::SchemaGenerator.new([])
+    schema.construct_schema
+    schema = schema.output
     assert_equal 'http://json-schema.org/draft-04/schema#', schema['$schema']
     assert_equal 'array', schema['type']
     assert_equal false, schema['uniqueItems']
@@ -30,7 +34,9 @@ class SchemaGeneratorTest < Minitest::Test
 
   def test_single_value_hash
     input = {'name' => 'alexander'}
-    schema = Fudo::SchemaGenerator.new(input).output
+    schema = Fudo::SchemaGenerator.new(input)
+    schema.construct_schema
+    schema = schema.output
     assert_equal 1, schema['properties'].size
     assert_equal 'alexander', schema['properties']['name']['default']
     assert_equal 1, schema['required'].size
@@ -39,7 +45,9 @@ class SchemaGeneratorTest < Minitest::Test
 
   def test_single_value_array
     input = ['hello']
-    schema = Fudo::SchemaGenerator.new(input).output
+    schema = Fudo::SchemaGenerator.new(input)
+    schema.construct_schema
+    schema = schema.output
     assert_equal 1, schema['minItems']
     assert_equal 1, schema['items'].size
     assert_equal 'string', schema['items'][0]['type']

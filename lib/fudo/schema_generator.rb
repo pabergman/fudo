@@ -3,14 +3,14 @@ module Fudo
 
     attr_reader :output
 
+
     def initialize(input)
       @input = input
       @output = {}
-      construct_schema(@input, @output)
       output['$schema'] = 'http://json-schema.org/draft-04/schema#'
     end
 
-    def construct_schema(input, output)
+    def construct_schema(input = @input, output = @output)
       case input
       when Hash
         object(input, output)
@@ -49,7 +49,6 @@ module Fudo
     end
 
     def value(input, output)
-      puts input
       output['type'] = self.class.value_type(input)
       output['default'] = input
     end
